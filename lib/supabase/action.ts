@@ -658,12 +658,6 @@ export async function getUserData(): Promise<
       user_metadata: authData.user_metadata,
     });
 
-    // redirect to pricing page if user is not subscribed
-    const subscription = await getSubscriptionById(user.id);
-    if (!subscription) {
-      return { redirect: "/auth/pricing" };
-    }
-
     // Create a safe user object with guaranteed fields
     const safeUser: SafeUser = {
       id: user.id,
@@ -679,6 +673,16 @@ export async function getUserData(): Promise<
       return { redirect: "/auth/signin" };
     }
 
+    // redirect to pricing page if user is not subscribed
+    const subscription = await getSubscriptionById(user.id);
+    if (
+      !subscription &&
+      user.onboardedDefaultCreator &&
+      creator.connectedInstagram
+    ) {
+      return { redirect: "/auth/pricing" };
+    }
+
     const isAnyInstagramConnected = await prisma.creator.findFirst({
       where: {
         userId: user.id,
@@ -686,7 +690,7 @@ export async function getUserData(): Promise<
       },
     });
 
-    if (!isAnyInstagramConnected) {
+    if (!isAnyInstagramConnected && user.onboardedDefaultCreator) {
       console.log("Creator not connected to Instagram");
       return { redirect: "/auth/connect-social" };
     }

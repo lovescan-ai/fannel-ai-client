@@ -5,6 +5,7 @@ import {
   creatorList,
   deleteCreator,
   getCreator,
+  getUserById,
   updateCreator,
 } from "../supabase/action";
 import React, { useEffect } from "react";
@@ -131,22 +132,24 @@ export const useUpdateCreator = () => {
       data: Partial<Creator>;
     }) => {
       toast.loading("Updating creator");
-      if (!subscription) {
+      const account = await getUserById(user?.id as string);
+      if (!subscription && account?.onboardedDefaultCreator) {
         toast.warning("You can't update a creator, please subscribe");
         return;
       }
-      await checkCredits(subscription, data.maxCredit || 0);
+      await checkCredits(
+        subscription as InferSubscription,
+        data.maxCredit || 0
+      );
       if (data.onlyFansUrl) {
         const link = await createDubLink(data.onlyFansUrl);
         data.onlyFansUrl = link.url;
       }
       const creator = await updateCreator(creatorId, data);
+      toast.success("Creator updated successfully");
       return creator;
     },
 
-    onSuccess() {
-      toast.success("Creator updated successfully");
-    },
     onError() {
       toast.error("Failed to update creator");
     },

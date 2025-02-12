@@ -109,6 +109,7 @@ interface CreateCreatorParams {
   instagramAccessToken?: string;
   profileImageUrl?: string;
   instagram_account_id?: string;
+  maxCredit?: number;
 }
 
 export const createCreator = async ({
@@ -119,6 +120,7 @@ export const createCreator = async ({
   instagramAccessToken,
   profileImageUrl,
   instagram_account_id,
+  maxCredit,
 }: CreateCreatorParams): Promise<Creator | null> => {
   const user = await getUserById(userId);
   if (!user) return null;
@@ -132,6 +134,8 @@ export const createCreator = async ({
       instagramAccessToken,
       instagramProfileImageUrl: profileImageUrl,
       instagramAccountId: instagram_account_id,
+      maxCredit,
+      profileImageUrl,
     },
   });
 };
@@ -563,6 +567,13 @@ async function initializeCreatorSettings(creator: Creator): Promise<void> {
   }
 }
 
+export const deleteCreator = async (creatorId: string) => {
+  const creator = await prisma.creator.delete({
+    where: { id: creatorId },
+  });
+  return creator;
+};
+
 async function findOrCreateUser(userData: AuthUserData): Promise<User> {
   try {
     // First try to find user by ID
@@ -637,13 +648,7 @@ export async function getUserData(): Promise<
 
     if (!authData) {
       console.log("No authenticated user found");
-      return { redirect: "/auth/signin" };
-    }
-
-    // Validate required fields
-    if (!authData.id) {
-      console.error("Missing required user ID");
-      return { redirect: "/auth/signin" };
+      throw new Error("No authenticated user found");
     }
 
     // Find or create user and creator
@@ -668,7 +673,14 @@ export async function getUserData(): Promise<
       return { redirect: "/auth/signin" };
     }
 
-    if (!creator.connectedInstagram) {
+    const isAnyInstagramConnected = await prisma.creator.findFirst({
+      where: {
+        userId: user.id,
+        connectedInstagram: true,
+      },
+    });
+
+    if (!isAnyInstagramConnected) {
       console.log("Creator not connected to Instagram");
       return { redirect: "/auth/connect-social" };
     }

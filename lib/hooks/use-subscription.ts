@@ -7,8 +7,13 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+export interface InferSubscription extends Subscription {
+  plan: "tier-small-agencies" | "tier-agencies" | "one-time";
+}
 export const useRealtimeSubscription = (userId?: string) => {
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [subscription, setSubscription] = useState<InferSubscription | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -26,7 +31,7 @@ export const useRealtimeSubscription = (userId?: string) => {
           if (subscriptionError) {
             console.error("Error fetching subscription:", subscriptionError);
           } else {
-            setSubscription(subscriptionData as Subscription);
+            setSubscription(subscriptionData as InferSubscription);
           }
         }
       } catch (error) {

@@ -51,37 +51,40 @@ const Accounts: React.FC = () => {
           openEditCreator={openEditCreator}
           isLoading={loading}
         />
-        {/* {subscription?.plan === "tier-small-agencies" && ( */}
-        <>
-          <div
-            className={`${
-              editOrAdd == "add"
-                ? "invisible opacity-0 h-0 w-0 p-0 hidden transition-all duration-300 ease-in-out"
-                : "px-4 sm:px-6 py-4 sm:py-3"
-            } rounded-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 justify-between w-full border-dashed border-2 border-brandBlue4x bg-white`}
-          >
-            <div className="flex items-center space-x-3 w-full sm:w-auto">
-              <AddIcon className="w-14 h-14 sm:w-auto sm:h-auto" />
-              <p className={`text-lg sm:text-2xl text-black mulish--medium`}>
-                Add new creator
-              </p>
-            </div>
+        {subscription?.plan === "tier-small-agencies" ||
+          (subscription?.plan === "tier-agencies" && (
+            <>
+              <div
+                className={`${
+                  editOrAdd == "add"
+                    ? "invisible opacity-0 h-0 w-0 p-0 hidden transition-all duration-300 ease-in-out"
+                    : "px-4 sm:px-6 py-4 sm:py-3"
+                } rounded-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 justify-between w-full border-dashed border-2 border-brandBlue4x bg-white`}
+              >
+                <div className="flex items-center space-x-3 w-full sm:w-auto">
+                  <AddIcon className="w-14 h-14 sm:w-auto sm:h-auto" />
+                  <p
+                    className={`text-lg sm:text-2xl text-black mulish--medium`}
+                  >
+                    Add new creator
+                  </p>
+                </div>
 
-            <BasicButton
-              handleClick={() => setEditOrAdd("add")}
-              text={"Add"}
-              borderRadius={"rounded-10"}
-              width={"w-full sm:w-20"}
-              fontType={"mulish--regular"}
-              bgColor={`bg-brandBlue4x`}
-              className="mt-4 sm:mt-0"
-            />
-          </div>
-          {editOrAdd == "add" && (
-            <NewCreatorModal setType={setEditOrAdd} type="add" id="" />
-          )}
-        </>
-        {/* )} */}
+                <BasicButton
+                  handleClick={() => setEditOrAdd("add")}
+                  text={"Add"}
+                  borderRadius={"rounded-10"}
+                  width={"w-full sm:w-20"}
+                  fontType={"mulish--regular"}
+                  bgColor={`bg-brandBlue4x`}
+                  className="mt-4 sm:mt-0"
+                />
+              </div>
+              {editOrAdd == "add" && (
+                <NewCreatorModal setType={setEditOrAdd} type="add" id="" />
+              )}
+            </>
+          ))}
       </div>
     </DashBody>
   );

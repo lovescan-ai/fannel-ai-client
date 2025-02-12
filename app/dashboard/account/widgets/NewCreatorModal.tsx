@@ -6,7 +6,11 @@ import FormInput from "@/components/elements/form/FormInput";
 import FormSelect from "@/components/elements/form/FormSelect";
 import BasicButton from "@/components/elements/buttons/BasicButton";
 import LinkSocials, { Account } from "./LinkSocials";
-import { useCreateCreator, useUpdateCreator } from "@/lib/hooks/use-creator";
+import {
+  useCreateCreator,
+  useDeleteCreator,
+  useUpdateCreator,
+} from "@/lib/hooks/use-creator";
 import useReadUser from "@/lib/hooks/use-read-user";
 import useConnectSocial, {
   useDisconnectSocial,
@@ -53,12 +57,9 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
   creator,
 }) => {
   const { user } = useReadUser();
-  const {
-    addCreator,
-    isPending,
-    error,
-    data: recentCreator,
-  } = useCreateCreator();
+  const { addCreator, isPending, error } = useCreateCreator();
+  const { deleteCreator } = useDeleteCreator();
+  const router = useRouter();
   const { connectSocial, authorizationUrl } = useConnectSocial();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const { mutate: updateCreator } = useUpdateCreator();
@@ -66,7 +67,7 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
   const { getAccessToken } = useGetAccessToken("account");
   const { disconnectSocial, isDisconnecting } = useDisconnectSocial();
   const [isConnecting, setIsConnecting] = useState(false);
-  const router = useRouter();
+
   const [formData, setFormData] = useState<FormData>({
     creator_name: "",
     creator_onlyfans_url: "",
@@ -96,18 +97,16 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
     async (e: React.FormEvent) => {
       e.preventDefault();
       setIsConnecting(true);
-      if (type === "add" && user && imageUrl) {
+      if (type === "add") {
         addCreator({
           gender: formData.creator_gender,
           onlyfansUrl: formData.creator_onlyfans_url,
           creatorName: formData.creator_name,
           userId: user?.id as string,
-          profileImageUrl: imageUrl,
+          profileImageUrl: imageUrl || "",
           maxCredit: Number(formData.creator_max_credit),
         });
 
-        if (recentCreator) {
-        }
         await pageTracker({
           creatorId: creator?.id as string,
           previousPage: "/dashboard/account",
@@ -135,13 +134,13 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (type === "add" && user && imageUrl) {
+      if (type === "add" && user) {
         addCreator({
           gender: formData.creator_gender,
           onlyfansUrl: formData.creator_onlyfans_url,
           creatorName: formData.creator_name,
           userId: user.id,
-          profileImageUrl: imageUrl,
+          profileImageUrl: imageUrl || "",
           maxCredit: Number(formData.creator_max_credit),
         });
 
@@ -150,7 +149,7 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
         }
       }
 
-      if (type === "edit" && imageUrl) {
+      if (type === "edit") {
         updateCreator({
           creatorId: id,
           data: {
@@ -163,14 +162,8 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
         });
       }
       setType("");
-
-      toast.success(
-        `Successfully ${type === "add" ? "added" : "updated"} creator`
-      );
-      setType("");
     } catch (error) {
       console.error("Error handling creator:", error);
-      toast.error(`Failed to ${type === "add" ? "add" : "update"} creator`);
     }
   };
 
@@ -201,18 +194,17 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
   }, [creator]);
 
   const handleDeleteCreator = () => {
-    // Implement delete logic here
-    console.log("Deleting creator:", id);
+    deleteCreator(id);
     setIsMenuOpen(false);
     setType("");
+    router.refresh();
   };
 
   const handleToggleDisable = async () => {
     const newActiveState = isDisabled;
-    toast.loading(`${isDisabled ? "Enabling" : "Disabling"} creator...`);
 
     try {
-      await updateCreator({
+      updateCreator({
         creatorId: id,
         data: {
           isActive: newActiveState,
@@ -221,12 +213,7 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
 
       setIsDisabled(!isDisabled);
       toast.dismiss();
-      toast.success(
-        `Creator ${newActiveState ? "enabled" : "disabled"} successfully`
-      );
     } catch (error) {
-      toast.dismiss();
-      toast.error("Failed to update creator status");
       setIsDisabled(isDisabled);
     }
   };

@@ -658,6 +658,12 @@ export async function getUserData(): Promise<
       user_metadata: authData.user_metadata,
     });
 
+    // redirect to pricing page if user is not subscribed
+    const subscription = await getSubscriptionById(user.id);
+    if (!subscription) {
+      return { redirect: "/auth/pricing" };
+    }
+
     // Create a safe user object with guaranteed fields
     const safeUser: SafeUser = {
       id: user.id,

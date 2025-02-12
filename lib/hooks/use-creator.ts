@@ -172,6 +172,7 @@ export const useDeleteCreator = () => {
       return creator;
     },
     onSuccess() {
+      window.location.reload();
       toast.success("Creator deleted successfully");
     },
     onError() {

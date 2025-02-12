@@ -52,7 +52,7 @@ export default useConnectSocial;
 export const useDisconnectSocial = () => {
   const { mutate: disconnectSocial, isPending } = useMutation({
     mutationFn: async ({ creatorId }: { creatorId: string }) => {
-      toast.loading("Disconnect user");
+      toast.loading("Disconnecting account");
       const response = await disconnectInstagram(creatorId);
       return response;
     },

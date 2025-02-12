@@ -65,7 +65,7 @@ export const useCreateCreator = () => {
           subscription?.plan !== "tier-small-agencies" &&
           subscription?.plan !== "tier-agencies"
         ) {
-          toast.error("You can't add a creator");
+          toast.warning("You can't add a creator, please subscribe");
           return;
         }
         await checkCredits(subscription, creator.maxCredit || 0);
@@ -119,6 +119,9 @@ export const useViewCreators = () => {
 };
 
 export const useUpdateCreator = () => {
+  const { user } = useReadUser();
+  const { subscription } = useRealtimeSubscription(user?.id);
+
   const { mutate, data, isPending, error } = useMutation({
     mutationFn: async ({
       creatorId,
@@ -128,6 +131,11 @@ export const useUpdateCreator = () => {
       data: Partial<Creator>;
     }) => {
       toast.loading("Updating creator");
+      if (!subscription) {
+        toast.warning("You can't update a creator, please subscribe");
+        return;
+      }
+      await checkCredits(subscription, data.maxCredit || 0);
       if (data.onlyFansUrl) {
         const link = await createDubLink(data.onlyFansUrl);
         data.onlyFansUrl = link.url;
@@ -164,6 +172,7 @@ export const useDeleteCreator = () => {
       return creator;
     },
     onSuccess() {
+      window.location.reload();
       toast.success("Creator deleted successfully");
     },
     onError() {

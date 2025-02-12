@@ -58,7 +58,6 @@ export const useGetAccessToken = (page?: "account") => {
           ]);
 
           const kv = await readPageTracker();
-          toast.loading("Redirecting to creator details...");
 
           if (kv.nextPage) {
             router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);

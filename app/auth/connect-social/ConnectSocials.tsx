@@ -11,6 +11,7 @@ import { useViewCreators } from "@/lib/hooks/use-creator";
 import { ClipLoader } from "react-spinners";
 import { Creator } from "@prisma/client";
 import { pageTracker } from "@/lib/kv/actions";
+import { toast } from "sonner";
 
 const socials = [
   {
@@ -60,7 +61,7 @@ const socials = [
 const ConnectSocials = () => {
   const { creators, isLoading } = useViewCreators();
   const [currentCreator, setCurrentCreator] = useState<Creator | null>(null);
-  const [connectedSocials, setConnectedSocials] = useState<string[]>([]);
+  const [isConnectedSocials, setIsConnectedSocials] = useState(false);
   const { connectSocial, authorizationUrl, error } = useConnectSocial();
 
   useEffect(() => {
@@ -85,18 +86,31 @@ const ConnectSocials = () => {
   };
 
   const handleSocialClick = async (socialId: string) => {
-    if (socialId === "instagram") {
-      await Promise.all([
-        pageTracker({
-          creatorId: currentCreator?.id as string,
-          previousPage: "/auth/connect-social",
-          nextPage: "/auth/creator-details",
-        }),
-        connectSocial(),
-      ]);
-      if (!error) {
-        setConnectedSocials((prev) => [...prev, socialId]);
+    try {
+      toast.loading("Connecting social");
+      if (socialId === "instagram") {
+        await Promise.all([
+          pageTracker({
+            creatorId: currentCreator?.id as string,
+            previousPage: "/auth/connect-social",
+            nextPage: "/auth/creator-details",
+          }),
+          connectSocial(),
+        ]);
+        if (!error) {
+          setIsConnectedSocials(true);
+        }
+
+        toast.success("Social connected successfully");
       }
+      setTimeout(() => {
+        setIsConnectedSocials(false);
+      }, 10000);
+    } catch (err) {
+      console.error("Error connecting social:", err);
+      toast.error("Failed to connect social media account");
+    } finally {
+      toast.dismiss();
     }
   };
 
@@ -153,7 +167,7 @@ const ConnectSocials = () => {
             id={social.id}
             text={social.name}
             icon={social.icon}
-            connected={connectedSocials.includes(social.id)}
+            connected={isConnectedSocials}
             handleClick={() => handleSocialClick(social.id)}
             bgColor="white"
             fontType="normal"

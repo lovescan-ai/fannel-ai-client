@@ -77,7 +77,7 @@ export default function CreatorPricingSlider() {
           <Trophy className="h-8 w-8 md:h-10 md:w-10" />
 
           <div className="space-y-2">
-            <h3 className="text-2xl md:text-3xl font-bold tracking-tight">
+            <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-black">
               Big Agencies
             </h3>
             <p className="text-base md:text-lg font-semibold text-[#425067]">
@@ -104,13 +104,13 @@ export default function CreatorPricingSlider() {
         {/* Right Column */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <p className="text-sm">How many accounts do you need?</p>
+            <p className="text-sm text-black">How many accounts do you need?</p>
             <div className="flex items-center justify-between rounded-xl bg-[#F2F2F2] p-2.5 md:p-3">
               <MinusIcon
                 className="h-5 w-5 md:h-6 md:w-6 cursor-pointer text-black hover:opacity-70 transition-opacity"
                 onClick={handleDecrease}
               />
-              <span className="text-sm">{creators} creators</span>
+              <span className="text-sm text-black">{creators} creators</span>
               <PlusIcon
                 className="h-5 w-5 md:h-6 md:w-6 cursor-pointer text-black hover:opacity-70 transition-opacity"
                 onClick={handleIncrease}
@@ -119,16 +119,18 @@ export default function CreatorPricingSlider() {
           </div>
 
           <div className="space-y-2">
-            <p className="text-sm">How many messages do you need?</p>
+            <p className="text-sm text-black">How many messages do you need?</p>
             <div className="flex items-center justify-center rounded-xl bg-[#F2F2F2] p-2.5 md:p-3 text-sm">
               {nFormatter(messages, { full: true })}
             </div>
           </div>
 
           <div className="flex justify-end pt-2">
-            <p className="text-xl md:text-2xl font-bold">
+            <p className="text-xl md:text-2xl font-bold text-black">
               {formatPrice(price)}
-              <span className="text-xs md:text-sm font-normal">/month</span>
+              <span className="text-xs md:text-sm font-normal text-black">
+                /month
+              </span>
             </p>
           </div>
         </div>

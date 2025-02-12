@@ -3,6 +3,7 @@ import "./globals.css";
 import "./fonts.css";
 import "./mantineStyles.css";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: {
@@ -15,7 +16,9 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <IndexLayout>{children}</IndexLayout>
+      <Suspense>
+        <IndexLayout>{children}</IndexLayout>
+      </Suspense>
     </>
   );
 };

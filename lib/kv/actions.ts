@@ -7,6 +7,19 @@ interface PageTracker {
   nextPage?: string;
 }
 
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  tierType:
+    | "tier-agencies"
+    | "tier-small-agencies"
+    | "tier-creator"
+    | "one-time";
+  credits: number;
+  price: number;
+}
+
 export async function pageTracker({
   creatorId,
   previousPage,
@@ -28,13 +41,26 @@ export async function pageTracker({
 
 export async function readPageTracker() {
   const pageTracker = await kvClient.get(`page-tracker`);
-  console.log("Page Tracker 👮", pageTracker);
   return pageTracker as unknown as PageTracker;
 }
 
 export async function deletePageTracker() {
-  console.log("Deleting Page Tracker ❌");
   const pageTracker = await kvClient.del(`page-tracker`);
-  console.log("Page Tracker Deleted ✅");
   return pageTracker;
+}
+
+export async function saveUserInfoKv(user: User) {
+  await deleteUserInfoKv();
+  const res = await kvClient.set(`user-info`, user);
+  return res as unknown as User;
+}
+
+export async function readUserInfoKv() {
+  const res = await kvClient.get(`user-info`);
+  return res as unknown as User;
+}
+
+export async function deleteUserInfoKv() {
+  const res = await kvClient.del(`user-info`);
+  return res;
 }

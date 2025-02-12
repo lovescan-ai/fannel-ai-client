@@ -3,13 +3,14 @@ import {
   createCreator,
   createDubLink,
   creatorList,
+  deleteCreator,
   getCreator,
   updateCreator,
 } from "../supabase/action";
 import React, { useEffect } from "react";
 import { Creator, Gender } from "@prisma/client";
 import { toast } from "sonner";
-import { useRealtimeSubscription } from "./use-subscription";
+import { InferSubscription, useRealtimeSubscription } from "./use-subscription";
 import useReadUser from "./use-read-user";
 
 export const useGetCreator = () => {
@@ -33,6 +34,18 @@ export const useGetCreator = () => {
     getCreatorError: error,
   };
 };
+
+async function checkCredits(
+  subscription: InferSubscription,
+  maxCredits: number
+) {
+  const creditRemaining =
+    subscription?.credits - (subscription?.usedCredits || 0);
+  if (maxCredits > creditRemaining) {
+    toast.error("You don't have enough credits");
+    return;
+  }
+}
 export const useCreateCreator = () => {
   const { user } = useReadUser();
   const { subscription } = useRealtimeSubscription(user?.id);
@@ -48,17 +61,22 @@ export const useCreateCreator = () => {
     }) => {
       const loadingToast = toast.loading("Adding a new creator");
       try {
-        // if (subscription?.plan !== "tier-small-agencies") {
-        //   toast.dismiss(loadingToast);
-        //   toast.error("You can't add a creator");
-        //   throw new Error("You can't add a creator");
-        // }
+        if (
+          subscription?.plan !== "tier-small-agencies" &&
+          subscription?.plan !== "tier-agencies"
+        ) {
+          toast.error("You can't add a creator");
+          return;
+        }
+        await checkCredits(subscription, creator.maxCredit || 0);
         const newCreator = await createCreator(creator);
         toast.dismiss(loadingToast);
         return newCreator;
       } catch (error) {
         toast.dismiss(loadingToast);
         throw error;
+      } finally {
+        toast.dismiss();
       }
     },
 
@@ -109,6 +127,7 @@ export const useUpdateCreator = () => {
       creatorId: string;
       data: Partial<Creator>;
     }) => {
+      toast.loading("Updating creator");
       if (data.onlyFansUrl) {
         const link = await createDubLink(data.onlyFansUrl);
         data.onlyFansUrl = link.url;
@@ -130,6 +149,33 @@ export const useUpdateCreator = () => {
 
   return {
     mutate,
+    data,
+    isPending,
+    error,
+  };
+};
+
+export const useDeleteCreator = () => {
+  const { mutate, data, isPending, error } = useMutation({
+    mutationFn: async (creatorId: string) => {
+      const loadingToast = toast.loading("Deleting creator");
+      const creator = await deleteCreator(creatorId);
+      toast.dismiss(loadingToast);
+      return creator;
+    },
+    onSuccess() {
+      toast.success("Creator deleted successfully");
+    },
+    onError() {
+      toast.error("Failed to delete creator");
+    },
+    onSettled() {
+      toast.dismiss();
+    },
+  });
+
+  return {
+    deleteCreator: mutate,
     data,
     isPending,
     error,

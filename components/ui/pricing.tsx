@@ -1,13 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
-import {
-  CheckIcon,
-  PlusIcon,
-  Loader2,
-  CheckCircleIcon,
-  CheckCircle2,
-} from "lucide-react";
+import { Loader2 } from "lucide-react";
 import config from "@/config/global";
 import useReadUser from "@/lib/hooks/use-read-user";
 import { useRealtimeSubscription } from "@/lib/hooks/use-subscription";
@@ -73,6 +66,7 @@ const PricingPlans: React.FC = () => {
           cancelUrl: window.location.href,
           mode: "subscription",
           interval,
+          tierType: tier.id,
         }),
       });
 
@@ -80,28 +74,6 @@ const PricingPlans: React.FC = () => {
       window.location.href = data.url;
     } catch (error) {
       console.error("Error creating checkout:", error);
-    } finally {
-      setIsLoading(null);
-    }
-  };
-
-  const handleBilling = async (action: "cancel" | "manage") => {
-    setIsLoading(action);
-
-    try {
-      const response = await fetch("/api/stripe/create-portal", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          returnUrl: window.location.href,
-        }),
-      });
-      const data = await response.json();
-      window.location.href = data.url;
-    } catch (e) {
-      console.error(e);
     } finally {
       setIsLoading(null);
     }
@@ -128,6 +100,14 @@ const PricingPlans: React.FC = () => {
     <div className="w-full z-50 relative">
       <CircularPreloader isLoading={isRedirecting || !!isLoading} />
       <div className="w-full">
+        <div className="items-start">
+          <h3 className="text-black text-[40px] mulish--bold tracking-normal">
+            Chose your plan
+          </h3>
+          <p className="text-black mulish--regular text-lg tracking-tight py-2">
+            Select a plan before moving forward
+          </p>
+        </div>
         <div className="text-center mb-2">
           <div className="inline-flex my-6 relative space-x-4">
             <p

@@ -43,6 +43,7 @@ const IncreaseLimitsComponent = ({
           mode: "payment",
           price,
           credits,
+          tierType: "one-time",
         }),
       });
 

@@ -5,7 +5,6 @@ import AuthWrap from "../widgets/AuthWrap";
 import { Loader } from "lucide-react";
 import previewImg from "../../../public/creator-details-preview.png";
 import CreatorPricingSlider from "@/components/ui/creator-pricing-slider";
-import { readUserData } from "@/lib/supabase/readUser";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -14,8 +13,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const { data: user } = await readUserData();
-
   return (
     <AuthWrap
       previewImg={previewImg as any}

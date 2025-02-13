@@ -128,6 +128,13 @@ export const createCreator = async ({
   maxCredit,
 }: CreateCreatorParams): Promise<Creator | null> => {
   const user = await getUserById(userId);
+  const subscription = await getSubscriptionById(userId);
+  const creators = await getAllCreators(userId);
+  if (creators.length >= 5 && subscription?.plan !== "tier-small-agencies") {
+    throw new Error(
+      "You can't add a creator, please delete the existing creator"
+    );
+  }
   if (!user) return null;
   let linkSchema: LinkSchema | null = null;
 

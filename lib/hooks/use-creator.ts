@@ -147,16 +147,19 @@ export const useUpdateCreator = () => {
       data: Partial<Creator>;
     }) => {
       toast.loading("Updating creator");
-
+      let onlyFansUrl = data.onlyFansUrl;
       // await checkCredits(
       //   subscription as InferSubscription,
       //   data.maxCredit || 0
       // );
       if (data.onlyFansUrl) {
         const link = await createDubLink(data.onlyFansUrl);
-        data.onlyFansUrl = link.url;
+        onlyFansUrl = link.url;
       }
-      const creator = await updateCreator(creatorId, data);
+      const creator = await updateCreator(creatorId, {
+        ...data,
+        onlyFansUrl,
+      });
       toast.success("Creator updated successfully");
       return creator;
     },

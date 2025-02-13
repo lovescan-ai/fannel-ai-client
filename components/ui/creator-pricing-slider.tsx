@@ -120,7 +120,7 @@ export default function CreatorPricingSlider() {
 
           <div className="space-y-2">
             <p className="text-sm text-black">How many messages do you need?</p>
-            <div className="flex items-center justify-center rounded-xl bg-[#F2F2F2] p-2.5 md:p-3 text-sm">
+            <div className="flex items-center justify-center rounded-xl bg-[#F2F2F2] text-black p-2.5 md:p-3 text-sm">
               {nFormatter(messages, { full: true })}
             </div>
           </div>

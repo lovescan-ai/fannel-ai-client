@@ -20,6 +20,7 @@ const useConnectSocial = (): ConnectSocialResult => {
   const connectSocial = useCallback(async () => {
     setIsLoading(true);
     setError(null);
+    setAuthorizationUrl("");
 
     try {
       const response = await apiClient.get(`/instagram/authorize`, {

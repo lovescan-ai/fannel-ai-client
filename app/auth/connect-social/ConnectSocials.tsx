@@ -85,24 +85,23 @@ const ConnectSocials = () => {
     }
   };
 
-  const handleSocialClick = async (socialId: string) => {
+  const handleSocialClick = async () => {
     try {
       toast.loading("Connecting social");
-      if (socialId === "instagram") {
-        await Promise.all([
-          pageTracker({
-            creatorId: currentCreator?.id as string,
-            previousPage: "/auth/connect-social",
-            nextPage: "/auth/creator-details",
-          }),
-          connectSocial(),
-        ]);
-        if (!error) {
-          setIsConnectedSocials(true);
-        }
-
-        toast.success("Social connected successfully");
+      await Promise.all([
+        pageTracker({
+          creatorId: currentCreator?.id as string,
+          previousPage: "/auth/connect-social",
+          nextPage: "/auth/creator-details",
+        }),
+        connectSocial(),
+      ]);
+      if (!error) {
+        setIsConnectedSocials(true);
       }
+
+      toast.success("Social connected successfully");
+
       setTimeout(() => {
         setIsConnectedSocials(false);
       }, 10000);
@@ -168,7 +167,7 @@ const ConnectSocials = () => {
             text={social.name}
             icon={social.icon}
             connected={isConnectedSocials}
-            handleClick={() => handleSocialClick(social.id)}
+            handleClick={handleSocialClick}
             bgColor="white"
             fontType="normal"
             fontSize="sm"

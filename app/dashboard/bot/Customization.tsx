@@ -366,20 +366,6 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                     {renderMessageInput(type as "greeting" | "follow_up")}
                   </div>
                 )}
-                {type === "follow_up" && (
-                  <>
-                    {renderCtaInput(
-                      "Follow-up Button Label",
-                      "followup_button_label",
-                      "Enter follow-up button text"
-                    )}
-                    {renderCtaInput(
-                      "Follow-up Button Link",
-                      "followup_button_link",
-                      "Enter follow-up button URL"
-                    )}
-                  </>
-                )}
                 {type === "cta" && (
                   <>
                     {renderCtaInput(
@@ -399,6 +385,21 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                     )}
                   </>
                 )}
+                {type === "follow_up" && (
+                  <>
+                    {renderCtaInput(
+                      "Follow-up Button Label",
+                      "followup_button_label",
+                      "Enter follow-up button text"
+                    )}
+                    {renderCtaInput(
+                      "Follow-up Button Link",
+                      "followup_button_link",
+                      "Enter follow-up button URL"
+                    )}
+                  </>
+                )}
+
                 <div className="flex justify-end mt-4">
                   <BasicButton
                     width="w-fit mr-2"

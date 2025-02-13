@@ -247,26 +247,44 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
           <TextareaAutosize
             value={
               settings[
-                `custom_${
-                  type === "cta"
-                    ? "cta_message"
+                `${
+                  type === "follow_up"
+                    ? "custom_follow_up_msg"
                     : type === "greeting"
                     ? "custom_greeting_msg"
-                    : "custom_follow_up_msg"
+                    : "cta_message"
                 }` as keyof typeof settings
               ] as string
             }
             onChange={(e) =>
               handleChange(
-                `custom_${type}_msg` as keyof typeof settings,
+                `${
+                  type === "cta"
+                    ? "cta_message"
+                    : type === "greeting"
+                    ? "custom_greeting_msg"
+                    : "custom_follow_up_msg"
+                }` as keyof typeof settings,
                 e.target.value
               )
             }
             minRows={1}
             maxRows={4}
             id={`${type}Msg`}
-            name={`custom_${type}_msg`}
-            placeholder={`Type a ${type} message....`}
+            name={`${
+              type === "cta"
+                ? "cta_message"
+                : type === "greeting"
+                ? "custom_greeting_msg"
+                : "custom_follow_up_msg"
+            }`}
+            placeholder={`Type a ${
+              type === "cta"
+                ? "cta"
+                : type === "greeting"
+                ? "greeting"
+                : "follow up"
+            } message....`}
             className="resize-none w-full placeholder:text-brandGray29x mulish--medium bg-transparent focus:outline-none focus:border-0 border-0 outline-0 pr-10"
           />
           <div className="absolute right-0 bottom-0">
@@ -378,6 +396,11 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                       "CTA Button Link",
                       "cta_button_link",
                       "Enter CTA button URL"
+                    )}
+                    {renderCtaInput(
+                      "CTA Button Label",
+                      "cta_button_label",
+                      "Enter CTA button text"
                     )}
                   </>
                 )}

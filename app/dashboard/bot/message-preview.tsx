@@ -53,18 +53,18 @@ const InstagramPreview: React.FC<InstagramPreviewProps> = ({
                 />
               </div>
             )}
-          </div>
-          <div className="bg-[#eeeeee80] rounded-lg p-4 flex-grow">
-            <p className="text-sm mb-4">{ctaMessage}</p>
-            <div className="flex flex-col space-y-2">
-              {ctaButtonLabel && (
-                <Button
-                  variant="default"
-                  className="w-full bg-white !text-black !font-bold hover:bg-white"
-                >
-                  {ctaButtonLabel}
-                </Button>
-              )}
+            <div className="bg-[#eeeeee80] rounded-lg p-4 flex-grow">
+              <p className="text-sm mb-4">{ctaMessage}</p>
+              <div className="flex flex-col space-y-2">
+                {ctaButtonLabel && (
+                  <Button
+                    variant="default"
+                    className="w-full bg-white !text-black !font-bold hover:bg-white"
+                  >
+                    {ctaButtonLabel}
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>

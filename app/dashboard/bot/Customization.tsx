@@ -93,7 +93,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    type: "cta" | "follow_up"
+    type: "cta" | "follow_up" | "greeting"
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -241,13 +241,17 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
       </div>
     ));
 
-  const renderMessageInput = (type: "cta" | "follow_up") => (
+  const renderMessageInput = (type: "cta" | "follow_up" | "greeting") => (
     <div className="bg-white rounded-10 border-1 border-brandGray28x px-7 py-4">
       <div className="flex items-center gap-4">
         <div className="flex-grow relative">
           <TextareaAutosize
             value={
-              settings[`custom_${type}_msg` as keyof typeof settings] as string
+              settings[
+                `custom_${
+                  type === "cta" ? "cta_message" : type
+                }_msg` as keyof typeof settings
+              ] as string
             }
             onChange={(e) =>
               handleChange(
@@ -270,16 +274,15 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
               accept="image/*"
               style={{ display: "none" }}
             />
-            {type === "follow_up" ||
-              (type === "cta" && (
-                <button
-                  type="button"
-                  onClick={() => handleImageSelect(type)}
-                  className="hover:scale-90 duration-300 transition-all ease-in-out"
-                >
-                  <SelectPicIcon />
-                </button>
-              ))}
+            {(type === "follow_up" || type === "cta") && (
+              <button
+                type="button"
+                onClick={() => handleImageSelect(type)}
+                className="hover:scale-90 duration-300 transition-all ease-in-out"
+              >
+                <SelectPicIcon />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -353,18 +356,13 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
               <>
                 {type !== "greeting" &&
                   renderImagePreview(type as "cta" | "follow_up")}
-                {type !== "greeting" && (
-                  <div className="mb-4">
-                    {renderMessageInput(type as "cta" | "follow_up")}
-                  </div>
-                )}
+
+                <div className="mb-4">
+                  {renderMessageInput(type as "cta" | "follow_up")}
+                </div>
+
                 {type === "follow_up" && (
                   <>
-                    {renderCtaInput(
-                      "Follow-up Button Label",
-                      "followup_button_label",
-                      "Enter follow-up button text"
-                    )}
                     {renderCtaInput(
                       "Follow-up Button Link",
                       "followup_button_link",
@@ -374,11 +372,6 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                 )}
                 {type === "cta" && (
                   <>
-                    {renderCtaInput(
-                      "CTA Message",
-                      "cta_message",
-                      "Enter CTA message"
-                    )}
                     {renderCtaInput(
                       "CTA Button Label",
                       "cta_button_label",

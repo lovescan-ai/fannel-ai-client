@@ -16,7 +16,6 @@ import { usePathname } from "next/navigation";
 import Nav from "@/app/dashboard/widgets/Nav";
 import TopProgressBar from "@/components/ui/top-bar";
 import Providers from "@/providers/main";
-import { Toaster } from "sonner";
 
 const IndexLayout = ({ children }: { children: React.ReactNode }) => {
   const [isLayoutLoading, setIsLayoutLoading] = useState(true);
@@ -47,10 +46,7 @@ const IndexLayout = ({ children }: { children: React.ReactNode }) => {
   }, [navState, isAuthPage]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLayoutLoading(false);
-    }, 5000);
-    return () => clearTimeout(timer);
+    setIsLayoutLoading(false);
   }, []);
 
   return (

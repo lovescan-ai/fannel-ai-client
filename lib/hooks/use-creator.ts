@@ -60,17 +60,16 @@ export const useCreateCreator = () => {
       profileImageUrl?: string;
       maxCredit?: number;
     }) => {
-      const creators = await getAllCreators(user?.id as string);
-      const hasFullyOnboardedCreator = creators.some(
-        (creator) =>
-          creator.connectedInstagram &&
-          creator.name &&
-          creator.gender &&
-          creator.onlyFansUrl
-      );
-
       const loadingToast = toast.loading("Adding a new creator");
       try {
+        const creators = await getAllCreators(user?.id as string);
+        const hasFullyOnboardedCreator = creators.some(
+          (creator) =>
+            creator.connectedInstagram &&
+            creator.name &&
+            creator.gender &&
+            creator.onlyFansUrl
+        );
         // ignore check if creator is not fully onboarded
         if (
           hasFullyOnboardedCreator &&
@@ -78,6 +77,15 @@ export const useCreateCreator = () => {
           subscription?.plan !== "tier-agencies"
         ) {
           toast.warning("You can't add a creator, please subscribe");
+          return;
+        }
+        if (
+          creators.length === 5 &&
+          subscription?.plan !== "tier-small-agencies"
+        ) {
+          toast.error(
+            "You can't add a creator, please delete the existing creator"
+          );
           return;
         }
         await checkCredits(

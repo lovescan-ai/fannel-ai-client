@@ -1,12 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   createCreator,
-  createDubLink,
   creatorList,
   deleteCreator,
   getAllCreators,
   getCreator,
-  getUserById,
+  getOrCreateDubLink,
   updateCreator,
 } from "../supabase/action";
 import React, { useEffect } from "react";
@@ -85,7 +84,14 @@ export const useCreateCreator = () => {
           subscription as InferSubscription,
           creator.maxCredit || 0
         );
-        const newCreator = await createCreator(creator);
+        const link = await getOrCreateDubLink(
+          user?.id as string,
+          creator.onlyfansUrl as string
+        );
+        const newCreator = await createCreator({
+          ...creator,
+          onlyfansUrl: link.shortLink,
+        });
         toast.dismiss(loadingToast);
         return newCreator;
       } catch (error) {

@@ -42,7 +42,7 @@ const initialSettings: BotGeneralSettings = {
   custom_greeting_msg: "",
   customize_follow_up: false,
   custom_follow_up_msg: "",
-  interaction_setting: "",
+  interaction_setting: "10",
   time_zone: "",
   schedule: false,
   from: "",

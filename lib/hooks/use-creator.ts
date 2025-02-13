@@ -152,10 +152,10 @@ export const useUpdateCreator = () => {
       //   subscription as InferSubscription,
       //   data.maxCredit || 0
       // );
-      // if (data.onlyFansUrl) {
-      //   const link = await createDubLink(data.onlyFansUrl);
-      //   data.onlyFansUrl = link.url;
-      // }
+      if (data.onlyFansUrl) {
+        const link = await createDubLink(data.onlyFansUrl);
+        data.onlyFansUrl = link.url;
+      }
       const creator = await updateCreator(creatorId, data);
       toast.success("Creator updated successfully");
       return creator;

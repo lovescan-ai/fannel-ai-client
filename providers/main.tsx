@@ -6,7 +6,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <MantineProvider>
       <QueryProvider>
-        <Toaster richColors position="bottom-right" />
+        <Toaster richColors position="bottom-right" closeButton />
         {children}
       </QueryProvider>
     </MantineProvider>

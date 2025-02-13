@@ -14,6 +14,7 @@ import {
   useUpdateCreatorSettings,
 } from "@/lib/hooks/use-creator-settings";
 import useBotGeneralSettingsStore from "@/lib/hooks/useGenerateBotSettings";
+import SkeletonGeneral from "./widgets/skeleton-loading";
 
 const General = ({ creatorId }: { creatorId: string }) => {
   const { user } = useReadUser();
@@ -113,9 +114,12 @@ const General = ({ creatorId }: { creatorId: string }) => {
     }
   }, [creatorId, getCreatorSettings, isLoaded]);
 
+  if (botSettingsLoading || isLoadingSettings) {
+    return <SkeletonGeneral />;
+  }
+
   return (
     <div className={`flex flex-col gap-5`}>
-      <CircularPreloader isLoading={botSettingsLoading || isLoadingSettings} />
       <BotCardWrap>
         <p>Activate bot</p>
         <FormSwitch2
@@ -261,11 +265,6 @@ const General = ({ creatorId }: { creatorId: string }) => {
           />
         </div>
       </BotCardWrap>
-      {/* <ResponseStyle
-        setSliderValue={(value) => updateSetting("response_style", value)}
-        sliderValue={response_style}
-        handleSaveSettings={handleSaveSettings}
-      /> */}
     </div>
   );
 };

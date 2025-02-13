@@ -9,6 +9,7 @@ import useScheduleStore from "@/lib/hooks/useScheduleStore";
 import { ScheduleItem as ScheduleItemType } from "@prisma/client";
 import BasicButton from "@/components/elements/buttons/BasicButton";
 import MessageHeader from "./message-header";
+import ScheduleSkeleton from "./widgets/schedule-loading";
 
 const Schedule = ({ creatorId }: { creatorId: string }) => {
   const { botSettingsLoading } = useGetBot(creatorId);
@@ -57,14 +58,14 @@ const Schedule = ({ creatorId }: { creatorId: string }) => {
     );
   }, [newScheduleId, setSchedules]);
 
+  if (botSettingsLoading || isGettingCreatorSchedules) {
+    return <ScheduleSkeleton />;
+  }
   return (
     <div className="flex flex-col gap-5">
-      <CircularPreloader
+      {/* <CircularPreloader
         isLoading={botSettingsLoading || isGettingCreatorSchedules}
-      />
-
-      {/* Removed global TimezoneSelect */}
-
+      /> */}
       <div className="flex flex-col gap-5 mt-5">
         <div className="flex items-center space-x-2">
           <MessageHeader type="schedule" />

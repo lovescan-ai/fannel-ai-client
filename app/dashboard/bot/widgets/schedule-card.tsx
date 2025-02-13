@@ -8,6 +8,7 @@ import useScheduleStore from "@/lib/hooks/useScheduleStore";
 import StylishTimeInput from "./stylelish-input";
 import TimezoneSelect, { type ITimezone } from "react-timezone-select";
 import moment from "moment-timezone";
+import { toast } from "sonner";
 
 const DAYS_OF_WEEK = [
   { id: "sunday", day: 0, longDay: "Sunday", shortDay: "Sun" },
@@ -67,12 +68,20 @@ const ScheduleItem = React.memo(function ScheduleItem({
   );
 
   const handleDelete = useCallback(async () => {
-    deleteScheduleItem(schedule.id);
+    if (schedule.id.startsWith("cm")) {
+      deleteScheduleItem(schedule.id);
+    } else {
+      toast.warning("You cannot delete this schedule");
+    }
   }, [deleteScheduleItem, schedule.id]);
 
   const handleCancel = useCallback(() => {
-    onCancel();
-  }, [onCancel]);
+    if (schedule.id.startsWith("cm")) {
+      onCancel();
+    } else {
+      toast.warning("You cannot cancel this schedule");
+    }
+  }, [onCancel, schedule.id]);
 
   const memoizedDaysOfWeek = useMemo(
     () =>
@@ -119,16 +128,18 @@ const ScheduleItem = React.memo(function ScheduleItem({
             placeholder="Name"
             className="w-full bg-white p-3 rounded-lg border-none focus:outline-none focus:border-none focus:ring-0"
           />
-          <div
-            className="w-12 h-12 flex items-center justify-center bg-white rounded-md cursor-pointer"
-            onClick={handleDelete}
-          >
-            {isDeletingSchedule ? (
-              <Loader size={20} className="animate-spin" />
-            ) : (
-              <Trash className={"text-red-500 w-6 h-6"} />
-            )}
-          </div>
+          {schedule.id.startsWith("cm") && (
+            <div
+              className="w-12 h-12 flex items-center justify-center bg-white rounded-md cursor-pointer"
+              onClick={handleDelete}
+            >
+              {isDeletingSchedule ? (
+                <Loader size={20} className="animate-spin" />
+              ) : (
+                <Trash className={"text-red-500 w-6 h-6"} />
+              )}
+            </div>
+          )}
         </div>
         <div className="px-4">
           <BotCardWrap
@@ -263,6 +274,7 @@ const ScheduleItem = React.memo(function ScheduleItem({
             padding="py-2.5 px-7"
             text="Cancel"
             bgColor="bg-white"
+            disabled={botSettingsLoading || !schedule.id.startsWith("cm")}
             handleClick={handleCancel}
           />
           <BasicButton

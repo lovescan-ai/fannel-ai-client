@@ -386,7 +386,12 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                     {renderCtaInput(
                       "Follow-up Button Link",
                       "followup_button_link",
-                      "Enter follow-up button URL"
+                      "Enter follow up button url"
+                    )}
+                    {renderCtaInput(
+                      "Follow-up Button Label",
+                      "followup_button_label",
+                      "Enter follow up button text"
                     )}
                   </>
                 )}
@@ -395,12 +400,12 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                     {renderCtaInput(
                       "CTA Button Link",
                       "cta_button_link",
-                      "Enter CTA button URL"
+                      "Enter cta button url"
                     )}
                     {renderCtaInput(
                       "CTA Button Label",
                       "cta_button_label",
-                      "Enter CTA button text"
+                      "Enter cta button text"
                     )}
                   </>
                 )}

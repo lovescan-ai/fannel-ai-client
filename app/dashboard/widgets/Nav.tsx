@@ -86,6 +86,9 @@ const Nav: React.FC<NavProps> = ({ navState, setNavState, closeMobileNav }) => {
               <li key={item.id}>
                 <Link
                   href={item.link}
+                  onClick={() => {
+                    closeMobileNav();
+                  }}
                   className={`flex items-center ${
                     isExpanded ? "justify-start" : "justify-center"
                   } h-12 px-3 rounded-lg transition-all duration-300 relative overflow-hidden group ${

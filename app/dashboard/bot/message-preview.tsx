@@ -11,7 +11,8 @@ interface InstagramPreviewProps {
   ctaMessage?: string;
   ctaButtonLabel?: string;
   followupButtonLabel?: string;
-  previewImg?: string;
+  ctaPreviewImg?: string;
+  followUpPreviewImg?: string;
 }
 
 const InstagramPreview: React.FC<InstagramPreviewProps> = ({
@@ -20,7 +21,8 @@ const InstagramPreview: React.FC<InstagramPreviewProps> = ({
   ctaMessage,
   ctaButtonLabel,
   followupButtonLabel,
-  previewImg,
+  ctaPreviewImg,
+  followUpPreviewImg,
 }) => {
   const content = (
     <div className="bg-white relative py-4 px-2 rounded-[40px] w-full h-full overflow-y-auto">
@@ -40,6 +42,19 @@ const InstagramPreview: React.FC<InstagramPreviewProps> = ({
       {ctaMessage && (
         <div className="bg-white rounded-lg p-4 mb-1 flex items-end justify-start max-w-[85%] relative z-10">
           <div className="w-8 h-8 rounded-full bg-[#eeeeee80] flex-shrink-0 mr-3"></div>
+          <div>
+            {ctaPreviewImg && (
+              <div className="w-full h-full">
+                <Image
+                  src={ctaPreviewImg}
+                  alt="Preview Image"
+                  width={250}
+                  height={280}
+                  className="rounded-lg mb-4"
+                />
+              </div>
+            )}
+          </div>
           <div className="bg-[#eeeeee80] rounded-lg p-4 flex-grow">
             <p className="text-sm mb-4">{ctaMessage}</p>
             <div className="flex flex-col space-y-2">
@@ -59,10 +74,10 @@ const InstagramPreview: React.FC<InstagramPreviewProps> = ({
         <div className="bg-white rounded-lg p-4 mb-1 flex justify-start items-end max-w-[85%] relative z-10">
           <div className="w-8 h-8 rounded-full bg-[#eeeeee80] flex-shrink-0 mr-3"></div>
           <div>
-            {previewImg && (
+            {followUpPreviewImg && (
               <div className="w-full h-full">
                 <Image
-                  src={previewImg}
+                  src={followUpPreviewImg}
                   alt="Preview Image"
                   width={250}
                   height={280}

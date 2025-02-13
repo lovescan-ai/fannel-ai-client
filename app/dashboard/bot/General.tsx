@@ -20,6 +20,7 @@ const General = ({ creatorId }: { creatorId: string }) => {
   const { updateBot, updatingBot } = useUpdateBot();
   const { botSettings, botSettingsLoading, botSettingsError } =
     useGetBot(creatorId);
+
   const { updateCreatorSettings } = useUpdateCreatorSettings();
   const { creatorSettings, isLoadingSettings, getCreatorSettings } =
     useCreatorSettings();

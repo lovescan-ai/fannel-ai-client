@@ -84,14 +84,7 @@ export const useCreateCreator = () => {
           subscription as InferSubscription,
           creator.maxCredit || 0
         );
-        const link = await getOrCreateDubLink(
-          user?.id as string,
-          creator.onlyfansUrl as string
-        );
-        const newCreator = await createCreator({
-          ...creator,
-          onlyfansUrl: link.shortLink,
-        });
+        const newCreator = await createCreator(creator);
         toast.dismiss(loadingToast);
         return newCreator;
       } catch (error) {

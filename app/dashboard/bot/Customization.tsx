@@ -20,8 +20,6 @@ import InstagramPreview from "./message-preview";
 import useCustomizationStore from "@/lib/hooks/useCustomizationStore";
 import MessageHeader from "./message-header";
 
-const MemoizedInstagramPreview = React.memo(InstagramPreview);
-
 const Customization = ({ creatorId }: { creatorId: string }) => {
   const [componentLoaded, setComponentLoaded] = useState(false);
   const { updateBot, updatingBot } = useUpdateBot();
@@ -460,7 +458,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
   useEffect(() => {
     setTimeout(() => {
       setComponentLoaded(true);
-    }, 1000);
+    }, 3000);
   }, []);
 
   return (
@@ -471,17 +469,19 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
       {renderSection("cta")}
       {renderSection("follow_up")}
 
-      <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300">
-        <MemoizedInstagramPreview
-          greetingMessage={settings.custom_greeting_msg}
-          ctaMessage={settings.cta_message}
-          ctaButtonLabel={settings.cta_button_label}
-          followupButtonLabel={settings.followup_button_label}
-          followUpMessage={settings.custom_follow_up_msg}
-          ctaPreviewImg={settings.cta_image_url}
-          followUpPreviewImg={settings.follow_up_image_url}
-        />
-      </div>
+      {componentLoaded && (
+        <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300">
+          <InstagramPreview
+            greetingMessage={settings.custom_greeting_msg}
+            ctaMessage={settings.cta_message}
+            ctaButtonLabel={settings.cta_button_label}
+            followupButtonLabel={settings.followup_button_label}
+            followUpMessage={settings.custom_follow_up_msg}
+            ctaPreviewImg={settings.cta_image_url}
+            followUpPreviewImg={settings.follow_up_image_url}
+          />
+        </div>
+      )}
     </div>
   );
 };

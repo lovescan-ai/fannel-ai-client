@@ -18,6 +18,7 @@ import Skeleton from "@/components/ui/skeleton";
 import { Prisma } from "@prisma/client";
 import InstagramPreview from "./message-preview";
 import useCustomizationStore from "@/lib/hooks/useCustomizationStore";
+import MessageHeader from "./message-header";
 
 const Customization = ({ creatorId }: { creatorId: string }) => {
   const { updateBot, updatingBot } = useUpdateBot();
@@ -88,7 +89,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     updateSetting(name as keyof typeof settings, value);
   };
 
-  const handleImageSelect = (type: "greeting" | "follow_up") => {
+  const handleImageSelect = (type: "greeting" | "follow_up" | "cta") => {
     const fileInput =
       type === "greeting" ? greetingFileInputRef : followUpFileInputRef;
     fileInput.current?.click();
@@ -278,21 +279,24 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
               ref={
                 type === "greeting"
                   ? greetingFileInputRef
+                  : type === "cta"
+                  ? ctaFileInputRef
                   : followUpFileInputRef
               }
               onChange={(e) => handleFileChange(e, type)}
               accept="image/*"
               style={{ display: "none" }}
             />
-            {type === "follow_up" && (
-              <button
-                type="button"
-                onClick={() => handleImageSelect(type)}
-                className="hover:scale-90 duration-300 transition-all ease-in-out"
-              >
-                <SelectPicIcon />
-              </button>
-            )}
+            {type === "follow_up" ||
+              (type === "cta" && (
+                <button
+                  type="button"
+                  onClick={() => handleImageSelect(type)}
+                  className="hover:scale-90 duration-300 transition-all ease-in-out"
+                >
+                  <SelectPicIcon />
+                </button>
+              ))}
           </div>
         </div>
       </div>
@@ -331,14 +335,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
   const renderSection = (type: "greeting" | "follow_up" | "cta") => (
     <div>
-      <p className="mulish--semibold text-lg mb-4">
-        {type === "greeting"
-          ? "Greeting"
-          : type === "follow_up"
-          ? "Follow-Up"
-          : "CTA"}{" "}
-        Message
-      </p>
+      <MessageHeader type={type} />
       <BotCardWrap noFlex>
         {botSettingsLoading || isLoadingSettings ? (
           renderSkeletonLoader()

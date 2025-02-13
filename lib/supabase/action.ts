@@ -165,6 +165,8 @@ export const createCreator = async ({
           });
         }
 
+        await initializeCreatorSettings(creator);
+
         return creator;
       } catch (error) {
         throw new Error(
@@ -175,7 +177,7 @@ export const createCreator = async ({
       }
     },
     {
-      timeout: 10000,
+      timeout: 20000,
       isolationLevel: "Serializable",
     }
   );
@@ -691,10 +693,6 @@ async function findOrCreateCreator(user: SafeUser): Promise<Creator | null> {
         creatorName: user.name || "",
         userId: user.id,
       });
-
-      if (creator) {
-        await initializeCreatorSettings(creator);
-      }
     }
 
     return creator;

@@ -209,9 +209,8 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     }
   }, [creatorId, isLoaded, getCreatorSettings]);
 
-  const renderImagePreview = (type: "cta" | "follow_up") =>
-    type === "follow_up" ||
-    (type === "cta" && (
+  const renderImagePreview = (type: "cta" | "follow_up" | "greeting") =>
+    type !== "greeting" && (
       <div className="w-20 mb-2 h-20 rounded-md relative flex-shrink-0">
         {previewImages[type] ||
         settings[`${type}_image_url` as keyof typeof settings] ? (
@@ -239,7 +238,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
           </div>
         )}
       </div>
-    ));
+    );
 
   const renderMessageInput = (type: "cta" | "follow_up" | "greeting") => (
     <div className="bg-white rounded-10 border-1 border-brandGray28x px-7 py-4">
@@ -249,8 +248,12 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
             value={
               settings[
                 `custom_${
-                  type === "cta" ? "cta_message" : type
-                }_msg` as keyof typeof settings
+                  type === "cta"
+                    ? "cta_message"
+                    : type === "greeting"
+                    ? "custom_greeting_msg"
+                    : "custom_follow_up_msg"
+                }` as keyof typeof settings
               ] as string
             }
             onChange={(e) =>
@@ -354,11 +357,10 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
             {settings[`customize_${type}`] && (
               <>
-                {type !== "greeting" &&
-                  renderImagePreview(type as "cta" | "follow_up")}
+                {renderImagePreview(type as "cta" | "follow_up" | "greeting")}
 
                 <div className="mb-4">
-                  {renderMessageInput(type as "cta" | "follow_up")}
+                  {renderMessageInput(type as "cta" | "follow_up" | "greeting")}
                 </div>
 
                 {type === "follow_up" && (
@@ -372,11 +374,6 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                 )}
                 {type === "cta" && (
                   <>
-                    {renderCtaInput(
-                      "CTA Button Label",
-                      "cta_button_label",
-                      "Enter CTA button text"
-                    )}
                     {renderCtaInput(
                       "CTA Button Link",
                       "cta_button_link",

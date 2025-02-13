@@ -69,20 +69,22 @@ export const useCreateCreator = () => {
           creator.gender &&
           creator.onlyFansUrl
       );
-      if (!hasFullyOnboardedCreator) {
-        toast.warning("You can't add a creator, please onboard your account");
-        return;
-      }
+
       const loadingToast = toast.loading("Adding a new creator");
       try {
+        // ignore check if creator is not fully onboarded
         if (
+          hasFullyOnboardedCreator &&
           subscription?.plan !== "tier-small-agencies" &&
           subscription?.plan !== "tier-agencies"
         ) {
           toast.warning("You can't add a creator, please subscribe");
           return;
         }
-        await checkCredits(subscription, creator.maxCredit || 0);
+        await checkCredits(
+          subscription as InferSubscription,
+          creator.maxCredit || 0
+        );
         const newCreator = await createCreator(creator);
         toast.dismiss(loadingToast);
         return newCreator;

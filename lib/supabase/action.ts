@@ -141,9 +141,6 @@ export const createCreator = async ({
 };
 
 export const createDubLink = async (url: string) => {
-  if (!process.env.NEXT_PUBLIC_DUB_API_KEY) {
-    throw new Error("DUB_API_KEY is not set");
-  }
   const dub = new Dub({
     token: process.env.NEXT_PUBLIC_DUB_API_KEY,
   });

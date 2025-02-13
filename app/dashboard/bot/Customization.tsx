@@ -462,18 +462,19 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
     return () => {
       clearTimeout(timeout);
-      setComponentLoaded(false);
     };
   }, []);
 
   return (
     <div className="flex flex-col gap-5 relative">
       <CircularPreloader isLoading={updatingBot || isUpdatingSettings} />
+
       {renderSection("greeting")}
       {renderSection("cta")}
       {renderSection("follow_up")}
+
       {componentLoaded && (
-        <div className="md:absolute md:block hidden md:right-4 md:top-0 max-w-lg w-full bg-white transition-all ease-in-out duration-300">
+        <div className="md:absolute md:block hidden md:right-4 md:top-0 max-w-lg w-[340px] bg-white transition-all ease-in-out duration-300">
           <InstagramPreview
             greetingMessage={settings.custom_greeting_msg}
             ctaMessage={settings.cta_message}

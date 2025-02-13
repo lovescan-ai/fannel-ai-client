@@ -49,7 +49,7 @@ const IndexLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLayoutLoading(false);
-    }, 1000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
 

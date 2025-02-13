@@ -466,7 +466,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-5 relative">
+    <div className="flex flex-col gap-5">
       <CircularPreloader isLoading={updatingBot || isUpdatingSettings} />
 
       {renderSection("greeting")}

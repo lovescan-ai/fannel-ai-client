@@ -147,19 +147,25 @@ export const useUpdateCreator = () => {
       data: Partial<Creator>;
     }) => {
       toast.loading("Updating creator");
-      let onlyFansUrl = data.onlyFansUrl;
-      // await checkCredits(
-      //   subscription as InferSubscription,
-      //   data.maxCredit || 0
-      // );
-      if (data.onlyFansUrl) {
-        const link = await createDubLink(data.onlyFansUrl);
-        onlyFansUrl = link.url;
+      if (!data.onlyFansUrl) {
+        toast.error("OnlyFans URL is required");
+        return;
       }
-      const creator = await updateCreator(creatorId, {
-        ...data,
-        onlyFansUrl,
-      });
+
+      if (subscription) {
+        await checkCredits(
+          subscription as InferSubscription,
+          data.maxCredit || 0
+        );
+      }
+      const link = await createDubLink(data.onlyFansUrl);
+      if (!link) {
+        toast.error("Failed to create Dub link");
+        return;
+      }
+      data.onlyFansUrl = link.url;
+      const creator = await updateCreator(creatorId, data);
+
       toast.success("Creator updated successfully");
       return creator;
     },

@@ -234,17 +234,18 @@ const General = ({ creatorId }: { creatorId: string }) => {
           borderRadius={"rounded-0"}
         >
           <p>Interaction setting</p>
-          <CustomSelect2
-            selfEnd
-            id={"interactionSetting"}
+          <input
+            type="number"
+            min="1"
+            max="50"
+            className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue4x"
+            id="interactionSetting"
             name="interaction_setting"
             value={interaction_setting}
-            handleChange={handleChange}
-          >
-            <option value="2">2 interactions</option>
-            <option value="3">3 interactions</option>
-            <option value="4">4 interactions</option>
-          </CustomSelect2>
+            onChange={(e) =>
+              handleChange("interaction_setting", e.target.value)
+            }
+          />
         </BotCardWrap>
         <br />
 

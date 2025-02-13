@@ -19,6 +19,7 @@ import { Prisma } from "@prisma/client";
 import InstagramPreview from "./message-preview";
 import useCustomizationStore from "@/lib/hooks/useCustomizationStore";
 import MessageHeader from "./message-header";
+import { motion } from "framer-motion";
 
 const Customization = ({ creatorId }: { creatorId: string }) => {
   const { updateBot, updatingBot } = useUpdateBot();
@@ -458,7 +459,12 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     <div className="flex flex-col gap-5">
       <CircularPreloader isLoading={updatingBot || isUpdatingSettings} />
 
-      <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300">
+      <motion.div
+        initial={{ opacity: 0, x: "100%" }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ type: "spring", stiffness: 120, damping: 20 }}
+        className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white"
+      >
         <InstagramPreview
           greetingMessage={settings.custom_greeting_msg}
           ctaMessage={settings.cta_message}
@@ -468,7 +474,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
           ctaPreviewImg={settings.cta_image_url}
           followUpPreviewImg={settings.follow_up_image_url}
         />
-      </div>
+      </motion.div>
 
       {renderSection("greeting")}
       {renderSection("cta")}

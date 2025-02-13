@@ -506,20 +506,70 @@ export const updateCreatorSettings = async (
   ctaSettings: CTASettings;
   followUpSettings: FollowUpSettings;
 }> => {
-  const [ctaSettings, followUpSettings] = await Promise.all([
-    prisma.cTASettings.upsert({
-      where: { creatorId },
-      update: ctaData,
-      create: { creatorId, ...ctaData },
-    }),
-    prisma.followUpSettings.upsert({
-      where: { creatorId },
-      update: followUpData,
-      create: { creatorId, ...followUpData },
-    }),
-  ]);
+  const creator = await prisma.creator.findUnique({
+    where: { id: creatorId },
+    include: {
+      ctaSettings: true,
+      followUpSettings: true,
+    },
+  });
+  if (!creator) {
+    throw new Error("Creator not found");
+  }
+  return prisma.$transaction(
+    async (tx) => {
+      if (ctaData.ctaButtonLink !== creator.ctaSettings?.ctaButtonLink) {
+        const ctaTrackableLink = await dub.links.create({
+          url: ctaData.ctaButtonLink as string,
+        });
+        ctaData.ctaButtonLink = ctaTrackableLink.shortLink;
+        await tx.creatorLink.create({
+          data: {
+            creatorId,
+            linkId: ctaTrackableLink.id,
+            shortLink: ctaTrackableLink.shortLink,
+            key: ctaTrackableLink.key,
+          },
+        });
+      }
 
-  return { ctaSettings, followUpSettings };
+      if (
+        followUpData.followUpButtonLink !==
+        creator.followUpSettings?.followUpButtonLink
+      ) {
+        const followUpTrackableLink = await dub.links.create({
+          url: followUpData.followUpButtonLink as string,
+        });
+        followUpData.followUpButtonLink = followUpTrackableLink.shortLink;
+        await tx.creatorLink.create({
+          data: {
+            creatorId,
+            linkId: followUpTrackableLink.id,
+            shortLink: followUpTrackableLink.shortLink,
+            key: followUpTrackableLink.key,
+          },
+        });
+      }
+
+      const ctaSettings = await tx.cTASettings.upsert({
+        where: { creatorId },
+        update: ctaData,
+        create: { creatorId, ...ctaData },
+      });
+
+      const followUpSettings = await tx.followUpSettings.upsert({
+        where: { creatorId },
+        update: followUpData,
+        create: { creatorId, ...followUpData },
+      });
+
+      return { ctaSettings, followUpSettings };
+    },
+    {
+      timeout: 1000000,
+      isolationLevel: "Serializable",
+    }
+  );
 };
 
 export const signInWithPassword = async (email: string, password: string) => {

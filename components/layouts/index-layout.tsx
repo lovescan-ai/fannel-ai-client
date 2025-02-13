@@ -80,7 +80,7 @@ const IndexLayout = ({ children }: { children: React.ReactNode }) => {
           } bg-white`}
         >
           <Providers>
-            {!isAuthPage && (
+            {!isAuthPage && !isLayoutLoading && (
               <Nav
                 navState={navState}
                 setNavState={setNavState}
@@ -94,7 +94,7 @@ const IndexLayout = ({ children }: { children: React.ReactNode }) => {
                   : "w-full h-full flex flex-col md:block"
               }
             >
-              {!isAuthPage && !isLayoutLoading && (
+              {!isAuthPage && (
                 <div className="w-full bg-brandBlue2x px-2 py-3 flex md:hidden flex-row gap-10 justify-between sticky top-0 left-0 z-20">
                   <Link href={"/dashboard"} className="flex px-4">
                     <Image

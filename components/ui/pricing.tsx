@@ -26,12 +26,12 @@ const PricingPlans: React.FC = () => {
   const [frequency, setFrequency] = useState<Frequency>(frequencies[1]);
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const { user, loading } = useReadUser();
+  const { user } = useReadUser();
   const { subscription } = useRealtimeSubscription(user?.id ?? "");
   const router = useRouter();
   const monthlyRef = useRef<HTMLButtonElement>(null);
   const yearlyRef = useRef<HTMLButtonElement>(null);
-  const [toggleWidth, setToggleWidth] = useState({ monthly: 0, yearly: 0 });
+  const [_, setToggleWidth] = useState({ monthly: 0, yearly: 0 });
   const pathname = usePathname();
   const [isAnnual, setIsAnnual] = useState(true);
 

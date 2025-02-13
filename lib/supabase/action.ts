@@ -141,6 +141,7 @@ export const createCreator = async ({
 };
 
 export const createDubLink = async (url: string) => {
+  console.log("Creating Dub link");
   const dub = new Dub({
     token: process.env.NEXT_PUBLIC_DUB_API_KEY,
   });
@@ -148,7 +149,7 @@ export const createDubLink = async (url: string) => {
   const link = await dub.links.create({
     url,
   });
-
+  console.log("Dub link created", link);
   return link;
 };
 

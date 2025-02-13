@@ -29,6 +29,7 @@ interface ScheduleStore {
   ) => void;
   isDeletingSchedule: boolean;
   setIsDeletingSchedule: (isDeletingSchedule: boolean) => void;
+  resetSettings: () => void;
 }
 
 const useScheduleStore = create<ScheduleStore>((set) => ({
@@ -195,6 +196,13 @@ const useScheduleStore = create<ScheduleStore>((set) => ({
     set({ isDeletingSchedule: false });
   },
 
+  resetSettings: () => {
+    set({
+      schedules: [],
+      newScheduleId: "",
+      isCreatingNewSchedule: false,
+    });
+  },
   setIsLoaded: (isLoaded) => set({ isLoaded }),
   setNewScheduleId: (id) => set({ newScheduleId: id }),
   setCreatingNewSchedule: (isCreatingNewSchedule) =>

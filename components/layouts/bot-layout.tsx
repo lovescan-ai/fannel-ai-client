@@ -9,8 +9,22 @@ import General from "@/app/dashboard/bot/General";
 import Customization from "@/app/dashboard/bot/Customization";
 import Schedule from "@/app/dashboard/bot/Schedule";
 import DashBody from "@/app/dashboard/widgets/DashBody";
-
+import useBotGeneralSettingsStore from "@/lib/hooks/useGenerateBotSettings";
+import useBotCustomizationSettingsStore from "@/lib/hooks/useCustomizationStore";
+import useScheduleStore from "@/lib/hooks/useScheduleStore";
 const BotLayout = () => {
+  const resetGeneralSettings = useBotGeneralSettingsStore(
+    (state) => state.resetSettings
+  );
+
+  const resetCustomizationSettings = useBotCustomizationSettingsStore(
+    (state) => state.resetSettings
+  );
+
+  const resetScheduleSettings = useScheduleStore(
+    (state) => state.resetSettings
+  );
+
   const [activeTab, setActiveTab] = useState("general");
   const [selectedCreatorId, setSelectedCreatorId] = useState<string | null>(
     null
@@ -80,7 +94,12 @@ const BotLayout = () => {
             <select
               id="creator-select"
               value={selectedCreatorId || ""}
-              onChange={(e) => setSelectedCreatorId(e.target.value)}
+              onChange={(e) => {
+                setSelectedCreatorId(e.target.value);
+                resetGeneralSettings();
+                resetCustomizationSettings();
+                resetScheduleSettings();
+              }}
               className="appearance-none block w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue4x focus:border-brandBluering-brandBlue4x transition duration-150 ease-in-out"
             >
               {creators && creators.length > 0 ? (

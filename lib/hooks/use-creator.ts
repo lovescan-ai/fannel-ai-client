@@ -123,9 +123,6 @@ export const useViewCreators = () => {
       const creators = await creatorList();
       return creators;
     },
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: "always",
   });
 
   return {

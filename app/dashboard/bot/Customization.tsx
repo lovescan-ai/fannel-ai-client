@@ -183,6 +183,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
             ctaButtonLabel: settings.cta_button_label,
             ctaButtonLink: settings.cta_button_link,
             ctaContent: settings.cta_message,
+            ctaImageUrl: settings.cta_image_url,
           },
           followUpData: {},
         });
@@ -308,7 +309,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     </div>
   );
 
-  const renderCtaInput = (
+  const renderInput = (
     label: string,
     key: keyof typeof settings,
     placeholder: string
@@ -380,12 +381,27 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
                 {type === "follow_up" && (
                   <>
-                    {renderCtaInput(
+                    {renderInput(
+                      "Follow Up Button Label",
+                      "followup_button_label",
+                      "Enter Follow Up button text"
+                    )}
+                    {renderInput(
+                      "Follow Up Button Link",
+                      "followup_button_link",
+                      "Enter Follow Up button URL"
+                    )}
+                  </>
+                )}
+
+                {type === "cta" && (
+                  <>
+                    {renderInput(
                       "CTA Button Label",
                       "cta_button_label",
                       "Enter CTA button text"
                     )}
-                    {renderCtaInput(
+                    {renderInput(
                       "CTA Button Link",
                       "cta_button_link",
                       "Enter CTA button URL"

@@ -18,6 +18,10 @@ import { headers } from "next/headers";
 import { Dub } from "dub";
 import { LinkSchema } from "dub/dist/commonjs/models/components";
 
+const dub = new Dub({
+  token: process.env.NEXT_PUBLIC_DUB_API_KEY,
+});
+
 export const createUser = async (
   email: string,
   id: string,
@@ -125,20 +129,58 @@ export const createCreator = async ({
 }: CreateCreatorParams): Promise<Creator | null> => {
   const user = await getUserById(userId);
   if (!user) return null;
+  let linkSchema: LinkSchema | null = null;
 
-  return prisma.creator.create({
-    data: {
-      name: creatorName,
-      userId: user.id,
-      gender,
-      onlyFansUrl: onlyfansUrl,
-      instagramAccessToken,
-      instagramProfileImageUrl: profileImageUrl,
-      instagramAccountId: instagram_account_id,
-      maxCredit,
-      profileImageUrl,
+  if (onlyfansUrl) {
+    linkSchema = await dub.links.create({
+      url: onlyfansUrl,
+    });
+  }
+
+  const creator = await prisma.$transaction(
+    async (tx) => {
+      try {
+        const creator = await tx.creator.create({
+          data: {
+            name: creatorName,
+            userId: user.id,
+            gender,
+            onlyFansUrl: linkSchema?.shortLink,
+            instagramAccessToken,
+            instagramProfileImageUrl: profileImageUrl,
+            instagramAccountId: instagram_account_id,
+            maxCredit,
+            profileImageUrl,
+          },
+        });
+
+        if (linkSchema) {
+          await tx.creatorLink.create({
+            data: {
+              creatorId: creator.id,
+              linkId: linkSchema.id,
+              shortLink: linkSchema.shortLink,
+              key: linkSchema.key,
+            },
+          });
+        }
+
+        return creator;
+      } catch (error) {
+        throw new Error(
+          `Failed to create creator: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
+      }
     },
-  });
+    {
+      timeout: 10000,
+      isolationLevel: "Serializable",
+    }
+  );
+
+  return creator;
 };
 
 export const getOrCreateDubLink = async (userId: string, url: string) => {
@@ -172,6 +214,13 @@ export const updateCreator = async (
   data: Partial<Creator>
 ): Promise<{ success: boolean; creator?: Creator; error?: string }> => {
   try {
+    const existingCreator = await prisma.creator.findUnique({
+      where: { id: creatorId },
+    });
+    if (data.onlyFansUrl !== existingCreator?.onlyFansUrl) {
+      const link = await getOrCreateDubLink(creatorId, data.onlyFansUrl || "");
+      data.onlyFansUrl = link.shortLink;
+    }
     const creator = await prisma.creator.update({
       where: { id: creatorId },
       data,

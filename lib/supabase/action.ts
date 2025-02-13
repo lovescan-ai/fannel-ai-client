@@ -16,6 +16,7 @@ import { readUserData } from "./readUser";
 import { createClient } from "./server";
 import { headers } from "next/headers";
 import { Dub } from "dub";
+import { LinkSchema } from "dub/dist/commonjs/models/components";
 
 export const createUser = async (
   email: string,
@@ -140,17 +141,30 @@ export const createCreator = async ({
   });
 };
 
-export const createDubLink = async (url: string) => {
+export const getOrCreateDubLink = async (userId: string, url: string) => {
+  const link = await prisma.creatorLink.findFirst({
+    where: { creatorId: userId },
+  });
+  if (link) {
+    return link;
+  }
   console.log("Creating Dub link");
   const dub = new Dub({
     token: process.env.NEXT_PUBLIC_DUB_API_KEY,
   });
-
-  const link = await dub.links.create({
-    url,
+  const linkSchema = await dub.links.create({
+    url: url,
   });
-  console.log("Dub link created", link);
-  return link;
+  await prisma.creatorLink.create({
+    data: {
+      creatorId: userId,
+      linkId: linkSchema.id,
+      shortLink: linkSchema.shortLink,
+      key: linkSchema.key,
+    },
+  });
+  console.log("Dub link created", linkSchema);
+  return linkSchema;
 };
 
 export const updateCreator = async (

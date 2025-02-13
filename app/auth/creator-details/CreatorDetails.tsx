@@ -11,8 +11,8 @@ import FormSelect from "@/components/elements/form/FormSelect";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUpdateCreator } from "@/lib/hooks/use-creator";
 import { Gender } from "@prisma/client";
-import { createDubLink } from "@/lib/supabase/action";
 import { toast } from "sonner";
+import { getOrCreateDubLink } from "@/lib/supabase/action";
 
 YupPassword(Yup);
 
@@ -62,16 +62,16 @@ const CreatorDetails = () => {
     ) {
       return;
     }
-    const link = await createDubLink(creator_onlyfans_url);
-    if (!link) {
-      toast.error("Failed to create Dub link");
-      return;
-    }
+    const link = await getOrCreateDubLink(
+      query.get("id") as string,
+      creator_onlyfans_url
+    );
+
     mutate({
       creatorId: query.get("id") as string,
       data: {
         name: creator_name,
-        onlyFansUrl: link.url,
+        onlyFansUrl: link.shortLink,
         gender: creator_gender.toUpperCase() as Gender,
       },
     });

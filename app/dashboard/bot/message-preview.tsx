@@ -112,7 +112,7 @@ const InstagramPreview: React.FC<InstagramPreviewProps> = ({
   );
 
   return (
-    <div className="iphone-13-pro-max !ml-auto">
+    <div className="iphone-13-pro-max">
       <div className="iphone-inner">
         <div className="iphone-notch">
           <div className="flex items-center space-x-1">

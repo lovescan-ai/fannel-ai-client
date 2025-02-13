@@ -19,8 +19,6 @@ import { Prisma } from "@prisma/client";
 import InstagramPreview from "./message-preview";
 import useCustomizationStore from "@/lib/hooks/useCustomizationStore";
 import MessageHeader from "./message-header";
-import { AnimatePresence } from "framer-motion";
-import { motion } from "framer-motion";
 
 const Customization = ({ creatorId }: { creatorId: string }) => {
   const [componentLoaded, setComponentLoaded] = useState(false);
@@ -458,9 +456,11 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
   );
 
   useEffect(() => {
-    setTimeout(() => {
-      setComponentLoaded(true);
-    }, 1000);
+    setComponentLoaded(true);
+
+    return () => {
+      setComponentLoaded(false);
+    };
   }, []);
 
   return (
@@ -472,25 +472,17 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
       {renderSection("follow_up")}
 
       {componentLoaded && (
-        <AnimatePresence>
-          <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          >
-            <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300">
-              <InstagramPreview
-                greetingMessage={settings.custom_greeting_msg}
-                ctaMessage={settings.cta_message}
-                ctaButtonLabel={settings.cta_button_label}
-                followupButtonLabel={settings.followup_button_label}
-                followUpMessage={settings.custom_follow_up_msg}
-                ctaPreviewImg={settings.cta_image_url}
-                followUpPreviewImg={settings.follow_up_image_url}
-              />
-            </div>
-          </motion.div>
-        </AnimatePresence>
+        <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300">
+          <InstagramPreview
+            greetingMessage={settings.custom_greeting_msg}
+            ctaMessage={settings.cta_message}
+            ctaButtonLabel={settings.cta_button_label}
+            followupButtonLabel={settings.followup_button_label}
+            followUpMessage={settings.custom_follow_up_msg}
+            ctaPreviewImg={settings.cta_image_url}
+            followUpPreviewImg={settings.follow_up_image_url}
+          />
+        </div>
       )}
     </div>
   );

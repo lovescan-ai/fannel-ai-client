@@ -24,6 +24,8 @@ import useBroadcastChannel from "@/lib/hooks/use-broadcast-channel";
 import { useGetAccessToken } from "@/lib/hooks/use-get-access-token";
 import { toast } from "sonner";
 import { pageTracker } from "@/lib/kv/actions";
+import { updateCreator } from "@/lib/supabase/action";
+import { UseMutateFunction } from "@tanstack/react-query";
 interface FormData {
   creator_name: string;
   creator_onlyfans_url: string;
@@ -275,7 +277,12 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
         </AnimatePresence>
       </div>
       <div className="w-full h-full flex flex-col">
-        <UploadImage setImageUrl={setImageUrl} imageUrl={imageUrl} />
+        <UploadImage
+          setImageUrl={setImageUrl}
+          imageUrl={imageUrl}
+          creatorId={creator?.id as string}
+          updateCreator={updateCreator}
+        />
         <h2 className="text-2xl font-semibold text-center mb-8">
           {type === "add" ? "Add New Creator" : "Edit Creator"}
         </h2>
@@ -349,7 +356,21 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
 const UploadImage: React.FC<{
   setImageUrl: React.Dispatch<React.SetStateAction<string | null>>;
   imageUrl: string | null;
-}> = ({ setImageUrl, imageUrl }) => {
+  creatorId: string;
+  updateCreator: UseMutateFunction<
+    {
+      success: boolean;
+      creator?: Creator;
+      error?: string;
+    },
+    Error,
+    {
+      creatorId: string;
+      data: Partial<Creator>;
+    },
+    unknown
+  >;
+}> = ({ setImageUrl, imageUrl, creatorId, updateCreator }) => {
   const [__, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -371,6 +392,12 @@ const UploadImage: React.FC<{
       setFile(selectedFile);
       const objectUrl = URL.createObjectURL(selectedFile);
       setPreviewUrl(objectUrl);
+      updateCreator({
+        creatorId: creatorId,
+        data: {
+          profileImageUrl: objectUrl,
+        },
+      });
     }
   };
 

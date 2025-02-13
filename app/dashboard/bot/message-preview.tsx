@@ -1,5 +1,4 @@
 import Button from "@/components/ui/button";
-import DotPattern from "@/components/ui/magicdesign/dot-pattern";
 import { cn } from "@/lib/utils";
 import React from "react";
 import Image from "next/image";

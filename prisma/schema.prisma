@@ -83,6 +83,7 @@ model CTASettings {
   ctaButtonLabel String  @default("Subscribe")
   ctaButtonLink  String? @db.VarChar(2083)
   ctaContent     String?
+  ctaImageUrl    String? @db.VarChar(2083)
 
   creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 }

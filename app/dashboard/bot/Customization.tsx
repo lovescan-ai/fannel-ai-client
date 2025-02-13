@@ -34,10 +34,12 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
   const [previewImages, setPreviewImages] = React.useState({
     greeting: "",
     follow_up: "",
+    cta: "",
   });
 
   const greetingFileInputRef = useRef<HTMLInputElement>(null);
   const followUpFileInputRef = useRef<HTMLInputElement>(null);
+  const ctaFileInputRef = useRef<HTMLInputElement>(null);
   const { startUpload: startGreetingUpload, isUploading: isGreetingUploading } =
     useUploadThing("imageUploader");
   const { startUpload: startFollowUpUpload, isUploading: isFollowUpUploading } =
@@ -120,9 +122,13 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     }
   };
 
-  const handleRemoveImage = (type: "greeting" | "follow_up") => {
+  const handleRemoveImage = (type: "greeting" | "follow_up" | "cta") => {
     const fileInput =
-      type === "greeting" ? greetingFileInputRef : followUpFileInputRef;
+      type === "greeting"
+        ? greetingFileInputRef
+        : type === "follow_up"
+        ? followUpFileInputRef
+        : ctaFileInputRef;
     if (fileInput.current) {
       fileInput.current.value = "";
     }
@@ -179,6 +185,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
             ctaButtonLabel: settings.cta_button_label,
             ctaButtonLink: settings.cta_button_link,
             ctaContent: settings.cta_message,
+            ctaImageUrl: settings.cta_image_url,
           },
           followUpData: {
             followUpButtonLabel: settings.followup_button_label,
@@ -208,8 +215,9 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     }
   }, [creatorId, isLoaded, getCreatorSettings]);
 
-  const renderImagePreview = (type: "greeting" | "follow_up") =>
-    type === "follow_up" && (
+  const renderImagePreview = (type: "greeting" | "follow_up" | "cta") =>
+    type === "follow_up" ||
+    (type === "cta" && (
       <div className="w-20 mb-2 h-20 rounded-md relative flex-shrink-0">
         {previewImages[type] ||
         settings[`${type}_image_url` as keyof typeof settings] ? (
@@ -237,7 +245,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
           </div>
         )}
       </div>
-    );
+    ));
 
   const renderMessageInput = (type: "greeting" | "follow_up") => (
     <div className="bg-white rounded-10 border-1 border-brandGray28x px-7 py-4">
@@ -366,6 +374,20 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                     {renderMessageInput(type as "greeting" | "follow_up")}
                   </div>
                 )}
+                {type === "follow_up" && (
+                  <>
+                    {renderCtaInput(
+                      "Follow-up Button Label",
+                      "followup_button_label",
+                      "Enter follow-up button text"
+                    )}
+                    {renderCtaInput(
+                      "Follow-up Button Link",
+                      "followup_button_link",
+                      "Enter follow-up button URL"
+                    )}
+                  </>
+                )}
                 {type === "cta" && (
                   <>
                     {renderCtaInput(
@@ -385,21 +407,6 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                     )}
                   </>
                 )}
-                {type === "follow_up" && (
-                  <>
-                    {renderCtaInput(
-                      "Follow-up Button Label",
-                      "followup_button_label",
-                      "Enter follow-up button text"
-                    )}
-                    {renderCtaInput(
-                      "Follow-up Button Link",
-                      "followup_button_link",
-                      "Enter follow-up button URL"
-                    )}
-                  </>
-                )}
-
                 <div className="flex justify-end mt-4">
                   <BasicButton
                     width="w-fit mr-2"
@@ -453,16 +460,17 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
         <InstagramPreview
           greetingMessage={settings.custom_greeting_msg}
           ctaMessage={settings.cta_message}
+          ctaPreviewImg={settings.cta_image_url}
           ctaButtonLabel={settings.cta_button_label}
           followupButtonLabel={settings.followup_button_label}
           followUpMessage={settings.custom_follow_up_msg}
-          previewImg={settings.follow_up_image_url}
+          followUpPreviewImg={settings.follow_up_image_url}
         />
       </div>
 
       {renderSection("greeting")}
-      {renderSection("follow_up")}
       {renderSection("cta")}
+      {renderSection("follow_up")}
     </div>
   );
 };

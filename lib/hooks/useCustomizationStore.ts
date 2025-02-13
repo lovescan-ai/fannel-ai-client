@@ -7,6 +7,7 @@ interface CustomizationSettings {
   custom_follow_up_msg: string;
   greeting_image_url?: string;
   follow_up_image_url?: string;
+  cta_image_url?: string;
   customize_cta: boolean;
   cta_button_label: string;
   cta_button_link: string;
@@ -35,6 +36,7 @@ const initialSettings: CustomizationSettings = {
   custom_follow_up_msg: "",
   greeting_image_url: "",
   follow_up_image_url: "",
+  cta_image_url: "",
   customize_cta: false,
   cta_button_label: "",
   cta_button_link: "",

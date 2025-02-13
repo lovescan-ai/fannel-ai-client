@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Info } from "lucide-react";
 
 const MessageHeader = ({
   type,
 }: {
-  type: "greeting" | "follow_up" | "cta";
+  type: "greeting" | "follow_up" | "cta" | "schedule";
 }) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
@@ -17,6 +17,8 @@ const MessageHeader = ({
         return "Follow-Up";
       case "cta":
         return "CTA";
+      case "schedule":
+        return "Schedules";
       default:
         return "";
     }
@@ -30,6 +32,8 @@ const MessageHeader = ({
         return "Follow-up message will be sent after the selected time if the user hasn't clicked the link from your previous CTA.";
       case "cta":
         return "CTA message will be sent at the end of the interaction to guide the user to your page.";
+      case "schedule":
+        return "Schedule your AI bot in advance to activate automatically on specific days and times each week.";
       default:
         return "";
     }
@@ -71,7 +75,7 @@ const MessageHeader = ({
         onMouseEnter={() => setIsTooltipVisible(true)}
         onMouseLeave={() => setIsTooltipVisible(false)}
       >
-        <HelpCircle className="h-4 w-4 text-brandBlue4x cursor-help mb-4" />
+        <Info className="h-4 w-4 text-brandBlue4x cursor-help mb-4" />
 
         <AnimatePresence>
           {isTooltipVisible && (

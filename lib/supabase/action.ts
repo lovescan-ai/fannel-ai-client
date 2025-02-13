@@ -165,7 +165,27 @@ export const createCreator = async ({
           });
         }
 
-        await initializeCreatorSettings(creator);
+        await tx.botSettings.create({
+          data: {
+            creatorId: creator.id,
+            autoRespondTo: AutoRespondTo.ALL,
+            greetingMessageDelay: 0,
+            followUpMessageDelay: 0,
+            messageDelay: 0,
+          },
+        });
+        await tx.cTASettings.create({
+          data: {
+            creatorId: creator.id,
+            ctaButtonLabel: "Subscribe",
+          },
+        });
+        await tx.followUpSettings.create({
+          data: {
+            creatorId: creator.id,
+            followUpButtonLabel: "Spicy 🌶️",
+          },
+        });
 
         return creator;
       } catch (error) {
@@ -177,7 +197,7 @@ export const createCreator = async ({
       }
     },
     {
-      timeout: 20000,
+      timeout: 200000,
       isolationLevel: "Serializable",
     }
   );
@@ -605,29 +625,6 @@ interface SafeUser {
   id: string;
   email: string;
   name?: string;
-}
-
-async function initializeCreatorSettings(creator: Creator): Promise<void> {
-  try {
-    await Promise.all([
-      createBot({ creatorId: creator.id }),
-      prisma.cTASettings.create({
-        data: {
-          creatorId: creator.id,
-          ctaButtonLabel: "Subscribe",
-        },
-      }),
-      prisma.followUpSettings.create({
-        data: {
-          creatorId: creator.id,
-          followUpButtonLabel: "Spicy 🌶️",
-        },
-      }),
-    ]);
-  } catch (error) {
-    console.error("Failed to initialize creator settings:", error);
-    throw new Error("Failed to initialize creator settings");
-  }
 }
 
 export const deleteCreator = async (creatorId: string) => {

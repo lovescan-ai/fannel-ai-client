@@ -8,6 +8,7 @@ import { useGetCreatorSchedules } from "@/lib/hooks/use-schedule-item";
 import useScheduleStore from "@/lib/hooks/useScheduleStore";
 import { ScheduleItem as ScheduleItemType } from "@prisma/client";
 import BasicButton from "@/components/elements/buttons/BasicButton";
+import MessageHeader from "./message-header";
 
 const Schedule = ({ creatorId }: { creatorId: string }) => {
   const { botSettingsLoading } = useGetBot(creatorId);
@@ -66,8 +67,7 @@ const Schedule = ({ creatorId }: { creatorId: string }) => {
 
       <div className="flex flex-col gap-5 mt-5">
         <div className="flex items-center space-x-2">
-          <p className="mulish--bold text-lg">Schedules</p>
-          <Info size={20} className="text-brandBlue4x" />
+          <MessageHeader type="schedule" />
         </div>
 
         {schedules.map((schedule) =>

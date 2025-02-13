@@ -265,18 +265,20 @@ const ScheduleItem = React.memo(function ScheduleItem({
           Every, {memoizedDaysOfWeek}
         </p>
         <div className="flex items-center space-x-2">
-          <BasicButton
-            width="w-fit hover:scale-90 duration-300 transition-all ease-in-out"
-            fontType="mulish--semibold"
-            textColor="text-brandBlue4x"
-            fontSize="text-sm"
-            borderRadius="rounded-full border-1 border-brandBlue4x"
-            padding="py-2.5 px-7"
-            text="Cancel"
-            bgColor="bg-white"
-            disabled={botSettingsLoading || !schedule.id.startsWith("cm")}
-            handleClick={handleCancel}
-          />
+          {schedule.id.startsWith("cm") && (
+            <BasicButton
+              width="w-fit hover:scale-90 duration-300 transition-all ease-in-out"
+              fontType="mulish--semibold"
+              textColor="text-brandBlue4x"
+              fontSize="text-sm"
+              borderRadius="rounded-full border-1 border-brandBlue4x"
+              padding="py-2.5 px-7"
+              text="Cancel"
+              bgColor="bg-white"
+              disabled={botSettingsLoading}
+              handleClick={handleCancel}
+            />
+          )}
           <BasicButton
             width="w-fit hover:scale-90 duration-300 transition-all ease-in-out"
             fontType="mulish--semibold"

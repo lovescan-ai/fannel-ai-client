@@ -2,7 +2,7 @@ import IndexLayout from "@/components/layouts/index-layout";
 import "./globals.css";
 import "./fonts.css";
 import "./mantineStyles.css";
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -12,6 +12,15 @@ export const metadata: Metadata = {
   },
   description:
     "Effortlessly grow your traffic. Let AI bot handle all your Instagram DMs 24/7",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (

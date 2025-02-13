@@ -14,7 +14,6 @@ import {
   useUpdateCreatorSettings,
 } from "@/lib/hooks/use-creator-settings";
 import useBotGeneralSettingsStore from "@/lib/hooks/useGenerateBotSettings";
-import ResponseStyle from "./widgets/response-style";
 
 const General = ({ creatorId }: { creatorId: string }) => {
   const { user } = useReadUser();
@@ -261,11 +260,11 @@ const General = ({ creatorId }: { creatorId: string }) => {
           />
         </div>
       </BotCardWrap>
-      <ResponseStyle
+      {/* <ResponseStyle
         setSliderValue={(value) => updateSetting("response_style", value)}
         sliderValue={response_style}
         handleSaveSettings={handleSaveSettings}
-      />
+      /> */}
     </div>
   );
 };

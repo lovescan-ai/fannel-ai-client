@@ -615,6 +615,12 @@ async function findOrCreateUser(userData: AuthUserData): Promise<User> {
   }
 }
 
+export async function getAllCreators(userId: string) {
+  return prisma.creator.findMany({
+    where: { userId },
+  });
+}
+
 async function findOrCreateCreator(user: SafeUser): Promise<Creator | null> {
   try {
     let creator = await getCreator(user.id);

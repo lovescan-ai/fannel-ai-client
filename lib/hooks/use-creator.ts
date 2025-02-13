@@ -4,6 +4,7 @@ import {
   createDubLink,
   creatorList,
   deleteCreator,
+  getAllCreators,
   getCreator,
   getUserById,
   updateCreator,
@@ -60,16 +61,30 @@ export const useCreateCreator = () => {
       profileImageUrl?: string;
       maxCredit?: number;
     }) => {
+      const creators = await getAllCreators(user?.id as string);
+      const hasFullyOnboardedCreator = creators.some(
+        (creator) =>
+          creator.connectedInstagram &&
+          creator.name &&
+          creator.gender &&
+          creator.onlyFansUrl
+      );
+
       const loadingToast = toast.loading("Adding a new creator");
       try {
+        // ignore check if creator is not fully onboarded
         if (
+          hasFullyOnboardedCreator &&
           subscription?.plan !== "tier-small-agencies" &&
           subscription?.plan !== "tier-agencies"
         ) {
           toast.warning("You can't add a creator, please subscribe");
           return;
         }
-        await checkCredits(subscription, creator.maxCredit || 0);
+        await checkCredits(
+          subscription as InferSubscription,
+          creator.maxCredit || 0
+        );
         const newCreator = await createCreator(creator);
         toast.dismiss(loadingToast);
         return newCreator;
@@ -132,11 +147,7 @@ export const useUpdateCreator = () => {
       data: Partial<Creator>;
     }) => {
       toast.loading("Updating creator");
-      const account = await getUserById(user?.id as string);
-      if (!subscription && account?.onboardedDefaultCreator) {
-        toast.warning("You can't update a creator, please subscribe");
-        return;
-      }
+
       await checkCredits(
         subscription as InferSubscription,
         data.maxCredit || 0

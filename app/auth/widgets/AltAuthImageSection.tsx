@@ -4,8 +4,6 @@ import transparentAuth from "../../../public/transparent-auth.png";
 
 const AltAuthImageSection = ({
   previewImg,
-  previewMini,
-  previewMiniAlt,
   previewAlt,
 }: {
   previewImg: string;
@@ -24,7 +22,7 @@ const AltAuthImageSection = ({
           alt="Preview of Dashboard"
         />
         <div
-          className={`absolute hiw--gradient top-fiftyPercent left-0 -translate-x-20 z-10 rounded-r-30 py-4 pr-4 -translate-y-fiftyPercent w-ninetyPercent`}
+          className={`absolute top-fiftyPercent left-0 -translate-x-20 z-10 rounded-r-30 py-4 pr-4 -translate-y-fiftyPercent w-ninetyPercent`}
         >
           <Image
             src={previewImg}

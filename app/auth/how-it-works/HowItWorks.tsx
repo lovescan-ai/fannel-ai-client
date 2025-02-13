@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import ConnectSocial from "../../../public/connect-social.png";
-import ActivateSocial from "../../../public/activate-bot-bg.png";
-import AutomateSocial from "../../../public/automate-bot-bg.png";
+import ConnectSocial from "../../../public/connect-social.svg";
+import ActivateSocial from "../../../public/activate-bot-bg.svg";
+import AutomateSocial from "../../../public/automate-bot-bg.svg";
 import AuthWrap from "../widgets/AuthWrap";
 import { CheckCircle, LinkIcon, RefreshCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

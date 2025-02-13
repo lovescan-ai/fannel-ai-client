@@ -205,23 +205,21 @@ export const createCreator = async ({
   return creator;
 };
 
-export const getOrCreateDubLink = async (userId: string, url: string) => {
+export const getOrCreateDubLink = async (creatorId: string, url: string) => {
   const link = await prisma.creatorLink.findFirst({
-    where: { creatorId: userId },
+    where: { creatorId: creatorId },
   });
+
   if (link) {
     return link;
   }
-  console.log("Creating Dub link");
-  const dub = new Dub({
-    token: process.env.NEXT_PUBLIC_DUB_API_KEY,
-  });
+
   const linkSchema = await dub.links.create({
     url: url,
   });
   await prisma.creatorLink.create({
     data: {
-      creatorId: userId,
+      creatorId: creatorId,
       linkId: linkSchema.id,
       shortLink: linkSchema.shortLink,
       key: linkSchema.key,

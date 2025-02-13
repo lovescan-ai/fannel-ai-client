@@ -15,6 +15,7 @@ import {
   useUpdateCreatorSettings,
 } from "@/lib/hooks/use-creator-settings";
 import Skeleton from "@/components/ui/skeleton";
+import { Prisma } from "@prisma/client";
 import InstagramPreview from "./message-preview";
 import useCustomizationStore from "@/lib/hooks/useCustomizationStore";
 import MessageHeader from "./message-header";
@@ -32,19 +33,15 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     useCustomizationStore();
 
   const [previewImages, setPreviewImages] = React.useState({
-    greeting: "",
-    follow_up: "",
     cta: "",
+    follow_up: "",
   });
 
-  const greetingFileInputRef = useRef<HTMLInputElement>(null);
-  const followUpFileInputRef = useRef<HTMLInputElement>(null);
   const ctaFileInputRef = useRef<HTMLInputElement>(null);
-  const { startUpload: startGreetingUpload, isUploading: isGreetingUploading } =
+  const followUpFileInputRef = useRef<HTMLInputElement>(null);
+  const { startUpload: startCTAUpload, isUploading: isCTAUploading } =
     useUploadThing("imageUploader");
   const { startUpload: startFollowUpUpload, isUploading: isFollowUpUploading } =
-    useUploadThing("imageUploader");
-  const { startUpload: startCtaUpload, isUploading: isCtaUploading } =
     useUploadThing("imageUploader");
 
   const loadSettings = useCallback(() => {
@@ -67,6 +64,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
           creatorSettings.followUpSettings?.followUpButtonLink || "",
         followup_button_label:
           creatorSettings.followUpSettings?.followUpButtonLabel || "",
+        cta_image_url: creatorSettings.ctaSettings?.ctaImageUrl || "",
       });
     }
   }, [creatorSettings, botSettings, setSettings]);
@@ -88,19 +86,14 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     updateSetting(name as keyof typeof settings, value);
   };
 
-  const handleImageSelect = (type: "greeting" | "follow_up" | "cta") => {
-    const fileInput =
-      type === "greeting"
-        ? greetingFileInputRef
-        : type === "follow_up"
-        ? followUpFileInputRef
-        : ctaFileInputRef;
+  const handleImageSelect = (type: "cta" | "follow_up") => {
+    const fileInput = type === "cta" ? ctaFileInputRef : followUpFileInputRef;
     fileInput.current?.click();
   };
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    type: "greeting" | "follow_up" | "cta"
+    type: "cta" | "follow_up"
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -112,11 +105,9 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
       try {
         const uploadRes =
-          type === "greeting"
-            ? await startGreetingUpload([file])
-            : type === "follow_up"
-            ? await startFollowUpUpload([file])
-            : await startCtaUpload([file]);
+          type === "cta"
+            ? await startCTAUpload([file])
+            : await startFollowUpUpload([file]);
 
         if (uploadRes && uploadRes[0]) {
           updateSetting(
@@ -130,13 +121,8 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     }
   };
 
-  const handleRemoveImage = (type: "greeting" | "follow_up" | "cta") => {
-    const fileInput =
-      type === "greeting"
-        ? greetingFileInputRef
-        : type === "follow_up"
-        ? followUpFileInputRef
-        : ctaFileInputRef;
+  const handleRemoveImage = (type: "cta" | "follow_up") => {
+    const fileInput = type === "cta" ? ctaFileInputRef : followUpFileInputRef;
     if (fileInput.current) {
       fileInput.current.value = "";
     }
@@ -194,7 +180,6 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
             ctaButtonLabel: settings.cta_button_label,
             ctaButtonLink: settings.cta_button_link,
             ctaContent: settings.cta_message,
-            ctaImageUrl: settings.cta_image_url,
           },
           followUpData: {
             followUpButtonLabel: settings.followup_button_label,
@@ -224,42 +209,39 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     }
   }, [creatorId, isLoaded, getCreatorSettings]);
 
-  const renderImagePreview = (type: "greeting" | "follow_up" | "cta") => {
-    if (type === "follow_up" || type === "cta") {
-      return (
-        <div className="w-20 mb-2 h-20 rounded-md relative flex-shrink-0">
-          {previewImages[type] ||
-          settings[`${type}_image_url` as keyof typeof settings] ? (
-            <>
-              <Image
-                src={
-                  (previewImages[type] ||
-                    settings[`${type}_image_url` as keyof typeof settings] ||
-                    "") as string
-                }
-                alt={`${type} preview`}
-                fill
-                className="rounded-md object-cover"
-              />
-              <button
-                onClick={() => handleRemoveImage(type)}
-                className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md"
-              >
-                <X size={16} />
-              </button>
-            </>
-          ) : (
-            <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
-              <span className="text-gray-500 text-xs">No Image</span>
-            </div>
-          )}
-        </div>
-      );
-    }
-    return null;
-  };
+  const renderImagePreview = (type: "cta" | "follow_up") =>
+    type === "follow_up" ||
+    (type === "cta" && (
+      <div className="w-20 mb-2 h-20 rounded-md relative flex-shrink-0">
+        {previewImages[type] ||
+        settings[`${type}_image_url` as keyof typeof settings] ? (
+          <>
+            <Image
+              src={
+                (previewImages[type] ||
+                  settings[`${type}_image_url` as keyof typeof settings] ||
+                  "") as string
+              }
+              alt={`${type} preview`}
+              fill
+              className="rounded-md object-cover"
+            />
+            <button
+              onClick={() => handleRemoveImage(type)}
+              className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md"
+            >
+              <X size={16} />
+            </button>
+          </>
+        ) : (
+          <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
+            <span className="text-gray-500 text-xs">No Image</span>
+          </div>
+        )}
+      </div>
+    ));
 
-  const renderMessageInput = (type: "greeting" | "follow_up" | "cta") => (
+  const renderMessageInput = (type: "cta" | "follow_up") => (
     <div className="bg-white rounded-10 border-1 border-brandGray28x px-7 py-4">
       <div className="flex items-center gap-4">
         <div className="flex-grow relative">
@@ -283,33 +265,28 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
           <div className="absolute right-0 bottom-0">
             <input
               type="file"
-              ref={
-                type === "greeting"
-                  ? greetingFileInputRef
-                  : type === "follow_up"
-                  ? followUpFileInputRef
-                  : ctaFileInputRef
-              }
+              ref={type === "cta" ? ctaFileInputRef : followUpFileInputRef}
               onChange={(e) => handleFileChange(e, type)}
               accept="image/*"
               style={{ display: "none" }}
             />
-            {(type === "follow_up" || type === "cta") && (
-              <button
-                type="button"
-                onClick={() => handleImageSelect(type)}
-                className="hover:scale-90 duration-300 transition-all ease-in-out"
-              >
-                <SelectPicIcon />
-              </button>
-            )}
+            {type === "follow_up" ||
+              (type === "cta" && (
+                <button
+                  type="button"
+                  onClick={() => handleImageSelect(type)}
+                  className="hover:scale-90 duration-300 transition-all ease-in-out"
+                >
+                  <SelectPicIcon />
+                </button>
+              ))}
           </div>
         </div>
       </div>
     </div>
   );
 
-  const renderInput = (
+  const renderCtaInput = (
     label: string,
     key: keyof typeof settings,
     placeholder: string
@@ -374,34 +351,40 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
             {settings[`customize_${type}`] && (
               <>
-                {renderImagePreview(type as "greeting" | "follow_up" | "cta")}
-                <div className="mb-4">
-                  {renderMessageInput(type as "greeting" | "follow_up" | "cta")}
-                </div>
-
+                {type !== "greeting" &&
+                  renderImagePreview(type as "cta" | "follow_up")}
+                {type !== "greeting" && (
+                  <div className="mb-4">
+                    {renderMessageInput(type as "cta" | "follow_up")}
+                  </div>
+                )}
                 {type === "follow_up" && (
                   <>
-                    {renderInput(
-                      "Follow Up Button Label",
+                    {renderCtaInput(
+                      "Follow-up Button Label",
                       "followup_button_label",
-                      "Enter Follow Up button text"
+                      "Enter follow-up button text"
                     )}
-                    {renderInput(
-                      "Follow Up Button Link",
+                    {renderCtaInput(
+                      "Follow-up Button Link",
                       "followup_button_link",
-                      "Enter Follow Up button URL"
+                      "Enter follow-up button URL"
                     )}
                   </>
                 )}
-
                 {type === "cta" && (
                   <>
-                    {renderInput(
+                    {renderCtaInput(
+                      "CTA Message",
+                      "cta_message",
+                      "Enter CTA message"
+                    )}
+                    {renderCtaInput(
                       "CTA Button Label",
                       "cta_button_label",
                       "Enter CTA button text"
                     )}
-                    {renderInput(
+                    {renderCtaInput(
                       "CTA Button Link",
                       "cta_button_link",
                       "Enter CTA button URL"
@@ -418,7 +401,6 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                     padding="py-2 px-7"
                     text="Cancel"
                     bgColor="bg-transparent"
-                    className="!bg-transparent"
                   />
                   <BasicButton
                     width="w-fit"
@@ -430,17 +412,16 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                     text={
                       updatingBot || isUpdatingSettings
                         ? "Saving..."
-                        : type === "greeting" && isGreetingUploading
+                        : type === "cta" && isCTAUploading
                         ? "Uploading..."
                         : type === "follow_up" && isFollowUpUploading
                         ? "Uploading..."
                         : "Save"
                     }
                     bgColor="bg-brandBlue4x"
-                    className={"!bg-brandBlue4x"}
                     handleClick={() => handleSaveSettings(type)}
                     disabled={
-                      (type === "greeting" && isGreetingUploading) ||
+                      (type === "cta" && isCTAUploading) ||
                       (type === "follow_up" && isFollowUpUploading) ||
                       updatingBot ||
                       isUpdatingSettings
@@ -463,10 +444,10 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
         <InstagramPreview
           greetingMessage={settings.custom_greeting_msg}
           ctaMessage={settings.cta_message}
-          ctaPreviewImg={settings.cta_image_url}
           ctaButtonLabel={settings.cta_button_label}
           followupButtonLabel={settings.followup_button_label}
           followUpMessage={settings.custom_follow_up_msg}
+          ctaPreviewImg={settings.cta_image_url}
           followUpPreviewImg={settings.follow_up_image_url}
         />
       </div>

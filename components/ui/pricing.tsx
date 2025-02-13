@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, User } from "lucide-react";
 import config from "@/config/global";
 import useReadUser from "@/lib/hooks/use-read-user";
 import { useRealtimeSubscription } from "@/lib/hooks/use-subscription";
@@ -9,6 +9,7 @@ import CircularPreloader from "./preloader";
 import CheckmarkIcon from "./icons/checkmark";
 import Button from "./button";
 import ToggleSwitch from "./switch2";
+import { PricingCard, PricingToggle } from "./pricing-card";
 type FrequencyOption = "monthly" | "annually";
 
 interface Frequency {
@@ -102,98 +103,36 @@ const PricingPlans: React.FC = () => {
       <div className="w-full">
         <div className="items-start">
           <h3 className="text-black text-[40px] mulish--bold tracking-normal">
-            Chose your plan
+            Choose your plan
           </h3>
           <p className="text-black mulish--regular text-lg tracking-tight py-2">
             Select a plan before moving forward
           </p>
         </div>
-        <div className="text-center mb-2">
-          <div className="inline-flex my-6 relative space-x-4">
-            <p
-              className={`text-brandBlue4x mulish--semibold tracking-tighter ${
-                !isAnnual ? "font-bold" : ""
-              }`}
-            >
-              Monthly
-            </p>
-            <ToggleSwitch
-              className="!h-8"
-              initialState={isAnnual}
-              onToggle={(isOn) => {
-                setIsAnnual(isOn);
-                setFrequency(isOn ? frequencies[1] : frequencies[0]);
-              }}
-            />
-            <p
-              className={`text-brandBlue4x mulish--semibold tracking-tighter ${
-                isAnnual ? "font-bold" : ""
-              }`}
-            >
-              Annually
-            </p>
-          </div>
-          {isAnnual && (
-            <button className="bg-[#e5e9fd] text-brandBlue4x border border-brandBlue4x rounded-lg h-7 px-2 text-xs mulish--bold ml-3">
-              Save 30%
-            </button>
-          )}
-        </div>
+
+        <PricingToggle
+          isAnnual={isAnnual}
+          onToggle={(isOn: boolean) => {
+            setIsAnnual(isOn);
+            setFrequency(isOn ? frequencies[1] : frequencies[0]);
+          }}
+        />
 
         <div className="grid sm:grid-cols-2 gap-5">
           {config.stripe.plans.map((plan) => (
-            <div
+            <PricingCard
               key={plan.id}
-              className="w-full rounded-[22px] bg-white border-1 border-brandBlue4x lg:h-[52vh] h-[65vh] relative overflow-hidden"
-            >
-              <div className="rounded-b-[22px] border-b-1 border-brandBlue4x bg-[#496AEB] h-[140px] flex flex-col justify-center items-start p-8">
-                <h3 className="text-white text-[19.5px] mulish--bold">
-                  {plan.name}
-                </h3>
-                <div className="flex items-center">
-                  <h4 className="text-white text-[42px] font-bold tracking-tighter">
-                    {isAnnual
-                      ? calculateDiscountedMonthlyPrice(plan.price.monthly)
-                      : plan.price.monthly}
-                  </h4>
-                  {isAnnual && (
-                    <p className="px-1.5 py-0.5 ml-3 rounded-lg border border-white bg-white/10 text-white text-[14.5px] font-[600] mulish--bold">
-                      -30%
-                    </p>
-                  )}
-                </div>
-                <p className="text-white text-[14.5px] font-[600] mulish--bold">
-                  Per month
-                  {isAnnual && " (billed annually)"}
-                </p>
-              </div>
-              <ul className="flex flex-col gap-2 p-8 space-y-2">
-                {plan.features.map((feature) => (
-                  <li className="flex items-center gap-2">
-                    <CheckmarkIcon className="w-[20px] h-[20px] text-brandBlue4x" />
-                    <span className="text-[#1F2937] text-base mulish--regular">
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <div className="absolute bottom-8 left-8 right-8">
-                <Button
-                  onClick={() => handlePayment(plan)}
-                  className="w-full bg-brandBlue4x text-white rounded-lg py-3 text-base mulish--bold"
-                  disabled={isLoading === plan.id}
-                >
-                  {isLoading === plan.id ? (
-                    <>
-                      <Loader2 className="animate-spin w-4 h-4 mr-2 inline" />
-                      Loading...
-                    </>
-                  ) : (
-                    "Get Started"
-                  )}
-                </Button>
-              </div>
-            </div>
+              type={plan.id === "tier-creator" ? "creator" : "agency"}
+              price={
+                isAnnual
+                  ? calculateDiscountedMonthlyPrice(plan.price.monthly)
+                  : plan.price.monthly
+              }
+              onClick={() => handlePayment(plan)}
+              disabled={isLoading === plan.id}
+              loading={isLoading === plan.id}
+              isAnnual={isAnnual}
+            />
           ))}
         </div>
       </div>

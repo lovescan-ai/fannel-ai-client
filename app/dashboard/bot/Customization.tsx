@@ -15,7 +15,6 @@ import {
   useUpdateCreatorSettings,
 } from "@/lib/hooks/use-creator-settings";
 import Skeleton from "@/components/ui/skeleton";
-import { Prisma } from "@prisma/client";
 import InstagramPreview from "./message-preview";
 import useCustomizationStore from "@/lib/hooks/useCustomizationStore";
 import MessageHeader from "./message-header";
@@ -91,7 +90,11 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
   const handleImageSelect = (type: "greeting" | "follow_up" | "cta") => {
     const fileInput =
-      type === "greeting" ? greetingFileInputRef : followUpFileInputRef;
+      type === "greeting"
+        ? greetingFileInputRef
+        : type === "follow_up"
+        ? followUpFileInputRef
+        : ctaFileInputRef;
     fileInput.current?.click();
   };
 
@@ -220,37 +223,40 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     }
   }, [creatorId, isLoaded, getCreatorSettings]);
 
-  const renderImagePreview = (type: "greeting" | "follow_up" | "cta") =>
-    type === "follow_up" ||
-    (type === "cta" && (
-      <div className="w-20 mb-2 h-20 rounded-md relative flex-shrink-0">
-        {previewImages[type] ||
-        settings[`${type}_image_url` as keyof typeof settings] ? (
-          <>
-            <Image
-              src={
-                (previewImages[type] ||
-                  settings[`${type}_image_url` as keyof typeof settings] ||
-                  "") as string
-              }
-              alt={`${type} preview`}
-              fill
-              className="rounded-md object-cover"
-            />
-            <button
-              onClick={() => handleRemoveImage(type)}
-              className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md"
-            >
-              <X size={16} />
-            </button>
-          </>
-        ) : (
-          <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
-            <span className="text-gray-500 text-xs">No Image</span>
-          </div>
-        )}
-      </div>
-    ));
+  const renderImagePreview = (type: "greeting" | "follow_up" | "cta") => {
+    if (type === "follow_up" || type === "cta") {
+      return (
+        <div className="w-20 mb-2 h-20 rounded-md relative flex-shrink-0">
+          {previewImages[type] ||
+          settings[`${type}_image_url` as keyof typeof settings] ? (
+            <>
+              <Image
+                src={
+                  (previewImages[type] ||
+                    settings[`${type}_image_url` as keyof typeof settings] ||
+                    "") as string
+                }
+                alt={`${type} preview`}
+                fill
+                className="rounded-md object-cover"
+              />
+              <button
+                onClick={() => handleRemoveImage(type)}
+                className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md"
+              >
+                <X size={16} />
+              </button>
+            </>
+          ) : (
+            <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
+              <span className="text-gray-500 text-xs">No Image</span>
+            </div>
+          )}
+        </div>
+      );
+    }
+    return null;
+  };
 
   const renderMessageInput = (type: "greeting" | "follow_up" | "cta") => (
     <div className="bg-white rounded-10 border-1 border-brandGray28x px-7 py-4">
@@ -279,24 +285,23 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
               ref={
                 type === "greeting"
                   ? greetingFileInputRef
-                  : type === "cta"
-                  ? ctaFileInputRef
-                  : followUpFileInputRef
+                  : type === "follow_up"
+                  ? followUpFileInputRef
+                  : ctaFileInputRef
               }
               onChange={(e) => handleFileChange(e, type)}
               accept="image/*"
               style={{ display: "none" }}
             />
-            {type === "follow_up" ||
-              (type === "cta" && (
-                <button
-                  type="button"
-                  onClick={() => handleImageSelect(type)}
-                  className="hover:scale-90 duration-300 transition-all ease-in-out"
-                >
-                  <SelectPicIcon />
-                </button>
-              ))}
+            {(type === "follow_up" || type === "cta") && (
+              <button
+                type="button"
+                onClick={() => handleImageSelect(type)}
+                className="hover:scale-90 duration-300 transition-all ease-in-out"
+              >
+                <SelectPicIcon />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -376,25 +381,6 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                 {type === "follow_up" && (
                   <>
                     {renderCtaInput(
-                      "Follow-up Button Label",
-                      "followup_button_label",
-                      "Enter follow-up button text"
-                    )}
-                    {renderCtaInput(
-                      "Follow-up Button Link",
-                      "followup_button_link",
-                      "Enter follow-up button URL"
-                    )}
-                  </>
-                )}
-                {type === "cta" && (
-                  <>
-                    {renderCtaInput(
-                      "CTA Message",
-                      "cta_message",
-                      "Enter CTA message"
-                    )}
-                    {renderCtaInput(
                       "CTA Button Label",
                       "cta_button_label",
                       "Enter CTA button text"
@@ -416,6 +402,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                     padding="py-2 px-7"
                     text="Cancel"
                     bgColor="bg-transparent"
+                    className="!bg-transparent"
                   />
                   <BasicButton
                     width="w-fit"
@@ -434,6 +421,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
                         : "Save"
                     }
                     bgColor="bg-brandBlue4x"
+                    className={"!bg-brandBlue4x"}
                     handleClick={() => handleSaveSettings(type)}
                     disabled={
                       (type === "greeting" && isGreetingUploading) ||

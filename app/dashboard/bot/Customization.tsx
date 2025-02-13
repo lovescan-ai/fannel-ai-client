@@ -44,6 +44,8 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
     useUploadThing("imageUploader");
   const { startUpload: startFollowUpUpload, isUploading: isFollowUpUploading } =
     useUploadThing("imageUploader");
+  const { startUpload: startCtaUpload, isUploading: isCtaUploading } =
+    useUploadThing("imageUploader");
 
   const loadSettings = useCallback(() => {
     if (creatorSettings && botSettings) {
@@ -94,7 +96,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    type: "greeting" | "follow_up"
+    type: "greeting" | "follow_up" | "cta"
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -108,7 +110,9 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
         const uploadRes =
           type === "greeting"
             ? await startGreetingUpload([file])
-            : await startFollowUpUpload([file]);
+            : type === "follow_up"
+            ? await startFollowUpUpload([file])
+            : await startCtaUpload([file]);
 
         if (uploadRes && uploadRes[0]) {
           updateSetting(
@@ -247,7 +251,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
       </div>
     ));
 
-  const renderMessageInput = (type: "greeting" | "follow_up") => (
+  const renderMessageInput = (type: "greeting" | "follow_up" | "cta") => (
     <div className="bg-white rounded-10 border-1 border-brandGray28x px-7 py-4">
       <div className="flex items-center gap-4">
         <div className="flex-grow relative">
@@ -367,13 +371,11 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
 
             {settings[`customize_${type}`] && (
               <>
-                {type !== "cta" &&
-                  renderImagePreview(type as "greeting" | "follow_up")}
-                {type !== "cta" && (
-                  <div className="mb-4">
-                    {renderMessageInput(type as "greeting" | "follow_up")}
-                  </div>
-                )}
+                {renderImagePreview(type as "greeting" | "follow_up" | "cta")}
+                <div className="mb-4">
+                  {renderMessageInput(type as "greeting" | "follow_up" | "cta")}
+                </div>
+
                 {type === "follow_up" && (
                   <>
                     {renderCtaInput(

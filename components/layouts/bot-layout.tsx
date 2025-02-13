@@ -37,8 +37,8 @@ const BotLayout = () => {
 
   const renderSkeletonLoader = () => (
     <div className="animate-pulse space-y-4">
-      <Skeleton height="60px" width="200px" /> {/* Title */}
-      <Skeleton height="60px" /> {/* Creator select */}
+      <Skeleton height="60px" width="200px" />
+      <Skeleton height="60px" />
       <div className="flex space-x-2">
         {[1, 2, 3].map((i) => (
           <Skeleton key={i} height="60px" width="33%" />
@@ -121,9 +121,9 @@ const BotLayout = () => {
         </div>
 
         {selectedCreatorId ? (
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" key={selectedCreatorId}>
             <motion.div
-              key={activeTab}
+              key={`${activeTab}-${selectedCreatorId}`}
               variants={tabVariants}
               initial="hidden"
               animate="visible"
@@ -133,7 +133,10 @@ const BotLayout = () => {
               {tabs.map(
                 (tab) =>
                   activeTab === tab.id && (
-                    <tab.component key={tab.id} creatorId={selectedCreatorId} />
+                    <tab.component
+                      key={`${tab.id}-${selectedCreatorId}`}
+                      creatorId={selectedCreatorId}
+                    />
                   )
               )}
             </motion.div>

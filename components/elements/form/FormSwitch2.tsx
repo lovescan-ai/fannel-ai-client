@@ -19,10 +19,6 @@ const FormSwitch2 = ({
   selfEnd?: boolean;
   [key: string]: any;
 }) => {
-  const handleFieldsetClick = () => {
-    handleChange(switchName, !switchChecked);
-  };
-
   const handleSelectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleChange(switchName, e.target.checked);
   };
@@ -30,7 +26,6 @@ const FormSwitch2 = ({
   return (
     <fieldset
       id={fieldsetId}
-      onClick={handleFieldsetClick}
       className={`relative inline-block w-11 min-w-11 mr-2 align-middle select-none transition duration-200 ease-in toggle-wrap ${
         selfEnd ? "justify-self-end self-end" : ""
       } cursor-pointer`}

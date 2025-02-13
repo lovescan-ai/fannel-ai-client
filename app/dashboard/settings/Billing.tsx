@@ -54,10 +54,10 @@ const Billing: React.FC = () => {
           isDataLoading={!!loading}
         />
       </div>
-      {subscription?.status !== "active" && <IncreaseLimitsComponent />}
+      {/* {subscription?.status !== "active" && <IncreaseLimitsComponent />}
       <div className="sm:px-0 px-2">
         <ContactSupport />
-      </div>
+      </div> */}
     </div>
   );
 };

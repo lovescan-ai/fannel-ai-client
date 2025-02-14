@@ -244,7 +244,10 @@ export const updateCreator = async (
     const existingCreator = await prisma.creator.findUnique({
       where: { id: creatorId },
     });
-    if (data.onlyFansUrl !== existingCreator?.onlyFansUrl) {
+    if (
+      data.onlyFansUrl !== existingCreator?.onlyFansUrl &&
+      data.onlyFansUrl !== null
+    ) {
       const link = await getOrCreateDubLink(creatorId, data.onlyFansUrl || "");
       data.onlyFansUrl = link.shortLink;
     }

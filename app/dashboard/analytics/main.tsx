@@ -20,7 +20,6 @@ const AnalyticsPage: React.FC = () => {
     conversionRate,
     allCreatorsTotalClicks,
     allConversionRates,
-    allCreatorsDMCount,
     allCreatorsTotalDMs,
     allCreatorsTotalGreetings,
     allCreatorsTotalFollowUps,

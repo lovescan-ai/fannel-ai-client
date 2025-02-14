@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import AuthWrap from "../widgets/AuthWrap";
 import ConnectSocials from "./ConnectSocials";
-import previewImg from "@/public/connect-socials-preview.png";
+import previewImg from "@/public/connect-socials-preview.svg";
 import { Metadata } from "next";
 import { getCurrentCreator } from "@/lib/supabase/action";
 import { redirect } from "next/navigation";

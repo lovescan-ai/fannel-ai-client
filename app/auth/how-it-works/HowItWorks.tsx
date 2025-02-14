@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import ConnectSocial from "../../../public/connect-social.svg";
-import ActivateSocial from "../../../public/activate-bot-bg.svg";
-import AutomateSocial from "../../../public/automate-bot-bg.svg";
+import ConnectSocial from "../../../public/connect-social.png";
+import ActivateSocial from "../../../public/activate-bot-bg.png";
+import AutomateSocial from "../../../public/automate-bot-bg.png";
 import AuthWrap from "../widgets/AuthWrap";
 import { CheckCircle, LinkIcon, RefreshCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,21 +19,21 @@ const HowItWorks = () => {
       id: "connect",
       icon: LinkIcon,
       name: "Connect",
-      text: "Select and connect the social media platform you wish to integrate with our AI bot.",
+      text: "Connect the instagram account you wish to integrate with our AI bot.",
       img: ConnectSocial,
     },
     {
       id: "activate",
       icon: CheckCircle,
       name: "Activate",
-      text: "Activate the AI bot to start responding to your incoming messages.",
+      text: "Activate the AI bot to start responding to your incoming DMs.",
       img: ActivateSocial,
     },
     {
       id: "automate",
       icon: RefreshCcw,
       name: "Automate",
-      text: "Sit back as our AI bot turns your social media interactions into OnlyFans subscriptions.",
+      text: "Sit back as our AI bot turns your social media interactions into subscriptions.",
       img: AutomateSocial,
     },
   ];
@@ -58,7 +58,7 @@ const HowItWorks = () => {
       <CircularPreloader isLoading={isLoading} />
       <div className="flex flex-col relative items-start w-full max-w-md">
         <h1 className="text-3xl font-bold mb-6 mulish--regular">
-          How It Works
+          How it works
         </h1>
         <div className="space-y-6 w-full relative">
           {steps.map((step, index) => (

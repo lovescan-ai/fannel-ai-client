@@ -50,29 +50,54 @@ interface AnalyticsStore {
   isLoading: boolean;
   error: string | null;
 
-  startSession: (creatorId: string) => Promise<void>;
-  getTotalSessions: (creatorId: string) => Promise<void>;
-  getAllCreatorsCredits: () => Promise<void>;
-  getAllSessions: () => Promise<void>;
-  createTrackableLink: (creatorId: string, url: string) => Promise<string>;
+  startSession: (creatorId: string, userId: string) => Promise<void>;
+  getTotalSessions: (creatorId: string, userId: string) => Promise<void>;
+  getAllCreatorsCredits: (userId: string) => Promise<void>;
+  getAllSessions: (userId: string) => Promise<void>;
+  createTrackableLink: (
+    creatorId: string,
+    url: string,
+    userId: string
+  ) => Promise<string>;
   getTotalLinkClicks: (
     creatorId: string,
+    userId: string,
     timeFilter?: TimeFilter
   ) => Promise<void>;
   getCreatorLinks: (
     creatorId: string,
+    userId: string,
     timeFilter?: TimeFilter
   ) => Promise<void>;
-  getAllCreatorsTotalClicks: (timeFilter?: TimeFilter) => Promise<void>;
+  getAllCreatorsTotalClicks: (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => Promise<void>;
   getCreatorConversionRate: (
     creatorId: string,
+    userId: string,
     timeFilter?: TimeFilter
   ) => Promise<void>;
-  getAllCreatorsConversionRates: (timeFilter?: TimeFilter) => Promise<void>;
-  getAllCreatorsDMCount: (timeFilter?: TimeFilter) => Promise<void>;
-  getAllCreatorsTotalDMs: (timeFilter?: TimeFilter) => Promise<void>;
-  getAllCreatorsTotalGreetings: (timeFilter?: TimeFilter) => Promise<void>;
-  getAllCreatorsTotalFollowUps: (timeFilter?: TimeFilter) => Promise<void>;
+  getAllCreatorsConversionRates: (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => Promise<void>;
+  getAllCreatorsDMCount: (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => Promise<void>;
+  getAllCreatorsTotalDMs: (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => Promise<void>;
+  getAllCreatorsTotalGreetings: (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => Promise<void>;
+  getAllCreatorsTotalFollowUps: (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => Promise<void>;
 }
 
 const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
@@ -91,10 +116,12 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
   isLoading: false,
   error: null,
 
-  startSession: async (creatorId: string) => {
+  startSession: async (creatorId: string, userId: string) => {
     set({ isLoading: true, error: null });
     try {
-      await apiClient.post(`/analytics/${creatorId}/start-session`);
+      await apiClient.post(`/analytics/${creatorId}/start-session`, null, {
+        params: { userId },
+      });
     } catch (error) {
       set({ error: "Failed to start session" });
     } finally {
@@ -102,11 +129,14 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getTotalSessions: async (creatorId: string) => {
+  getTotalSessions: async (creatorId: string, userId: string) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get(
-        `/analytics/${creatorId}/total-sessions`
+        `/analytics/${creatorId}/total-sessions`,
+        {
+          params: { userId },
+        }
       );
       set({ totalSessions: response.data.totalSessions });
     } catch (error) {
@@ -116,11 +146,12 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getAllSessions: async () => {
+  getAllSessions: async (userId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get("/analytics/all-sessions");
-
+      const response = await apiClient.get("/analytics/all-sessions", {
+        params: { userId },
+      });
       set({ allSessions: response.data.allSessions });
     } catch (error) {
       set({ error: "Failed to get all sessions" });
@@ -129,12 +160,17 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  createTrackableLink: async (creatorId: string, url: string) => {
+  createTrackableLink: async (
+    creatorId: string,
+    url: string,
+    userId: string
+  ) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.post(
         `/analytics/${creatorId}/create-link`,
-        { url }
+        { url },
+        { params: { userId } }
       );
       return response.data.shortLink;
     } catch (error) {
@@ -145,13 +181,17 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getTotalLinkClicks: async (creatorId: string, timeFilter?: TimeFilter) => {
+  getTotalLinkClicks: async (
+    creatorId: string,
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get(
         `/analytics/${creatorId}/total-clicks`,
         {
-          params: timeFilter ? { timeFilter } : {},
+          params: { userId, ...(timeFilter && { timeFilter }) },
         }
       );
       set({ totalClicks: response.data.totalClicks });
@@ -162,11 +202,15 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getCreatorLinks: async (creatorId: string, timeFilter?: TimeFilter) => {
+  getCreatorLinks: async (
+    creatorId: string,
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get(`/analytics/${creatorId}/links`, {
-        params: timeFilter ? { timeFilter } : {},
+        params: { userId, ...(timeFilter && { timeFilter }) },
       });
       set({ creatorLinks: response.data.links });
     } catch (error) {
@@ -176,14 +220,17 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getAllCreatorsTotalClicks: async (timeFilter?: TimeFilter) => {
+  getAllCreatorsTotalClicks: async (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get(
-        "/analytics/all-creators-total-clicks"
-        // {
-        //   params: timeFilter ? { timeFilter } : {},
-        // }
+        "/analytics/all-creators-total-clicks",
+        {
+          params: { userId, ...(timeFilter && { timeFilter }) },
+        }
       );
       set({ allCreatorsTotalClicks: response.data.creatorsWithClicks });
     } catch (error) {
@@ -195,6 +242,7 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
 
   getCreatorConversionRate: async (
     creatorId: string,
+    userId: string,
     timeFilter?: TimeFilter
   ) => {
     set({ isLoading: true, error: null });
@@ -202,7 +250,7 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
       const response = await apiClient.get(
         `/analytics/${creatorId}/conversion-rate`,
         {
-          params: timeFilter ? { timeFilter } : {},
+          params: { userId, ...(timeFilter && { timeFilter }) },
         }
       );
       set({ conversionRate: response.data });
@@ -213,13 +261,16 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getAllCreatorsConversionRates: async (timeFilter?: TimeFilter) => {
+  getAllCreatorsConversionRates: async (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get(
         "/analytics/all-creators-conversion-rates",
         {
-          params: timeFilter ? { timeFilter } : {},
+          params: { userId, ...(timeFilter && { timeFilter }) },
         }
       );
       set({ allConversionRates: response.data.conversionRates });
@@ -230,11 +281,11 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getAllCreatorsDMCount: async (timeFilter?: TimeFilter) => {
+  getAllCreatorsDMCount: async (userId: string, timeFilter?: TimeFilter) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get("/analytics/all-creators-dm-count", {
-        params: timeFilter ? { timeFilter } : {},
+        params: { userId, ...(timeFilter && { timeFilter }) },
       });
       set({ allCreatorsDMCount: response.data.dmCounts });
     } catch (error) {
@@ -244,13 +295,13 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getAllCreatorsTotalDMs: async (timeFilter?: TimeFilter) => {
+  getAllCreatorsTotalDMs: async (userId: string, timeFilter?: TimeFilter) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get(
         "/analytics/all-creators-total-dms",
         {
-          params: timeFilter ? { timeFilter } : {},
+          params: { userId, ...(timeFilter && { timeFilter }) },
         }
       );
       set({ allCreatorsTotalDMs: response.data.dmCounts });
@@ -261,13 +312,16 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getAllCreatorsTotalGreetings: async (timeFilter?: TimeFilter) => {
+  getAllCreatorsTotalGreetings: async (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get(
         "/analytics/all-creators-total-greetings",
         {
-          params: timeFilter ? { timeFilter } : {},
+          params: { userId, ...(timeFilter && { timeFilter }) },
         }
       );
       set({ allCreatorsTotalGreetings: response.data.greetingCounts });
@@ -278,13 +332,16 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
     }
   },
 
-  getAllCreatorsTotalFollowUps: async (timeFilter?: TimeFilter) => {
+  getAllCreatorsTotalFollowUps: async (
+    userId: string,
+    timeFilter?: TimeFilter
+  ) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get(
         "/analytics/all-creators-total-followups",
         {
-          params: timeFilter ? { timeFilter } : {},
+          params: { userId, ...(timeFilter && { timeFilter }) },
         }
       );
       set({ allCreatorsTotalFollowUps: response.data.followUpCounts });
@@ -294,10 +351,13 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
       set({ isLoading: false });
     }
   },
-  getAllCreatorsCredits: async () => {
+
+  getAllCreatorsCredits: async (userId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get("/analytics/all-creators-credits");
+      const response = await apiClient.get("/analytics/all-creators-credits", {
+        params: { userId },
+      });
       set({ allCreatorsCredits: response.data.creatorCredits });
     } catch (error) {
       set({ error: "Failed to get all creators credits" });

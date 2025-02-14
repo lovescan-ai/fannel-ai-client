@@ -342,7 +342,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
   );
 
   const renderSection = (type: "greeting" | "follow_up" | "cta") => (
-    <div>
+    <div className="relative z-50">
       <MessageHeader type={type} />
       <BotCardWrap noFlex>
         {botSettingsLoading || isLoadingSettings ? (
@@ -474,7 +474,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
       {renderSection("follow_up")}
 
       {componentLoaded && (
-        <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300">
+        <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300 -z-1">
           <InstagramPreview
             greetingMessage={settings.custom_greeting_msg}
             ctaMessage={settings.cta_message}

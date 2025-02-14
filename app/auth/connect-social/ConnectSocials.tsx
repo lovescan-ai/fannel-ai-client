@@ -67,6 +67,7 @@ const ConnectSocials = () => {
   useEffect(() => {
     if (authorizationUrl) {
       window.open(authorizationUrl, "_blank");
+      window.close();
     }
   }, [authorizationUrl]);
 

@@ -17,12 +17,18 @@ const Accounts: React.FC = () => {
   const { user } = useReadUser();
   const { subscription } = useRealtimeSubscription(user?.id);
   const { creators, loading } = useRealtimeCreators(user?.id);
-
+  const [componentLoaded, setComponentLoaded] = useState(false);
   const openEditCreator = (id: string) => {
     const temp = creators?.filter((creator) => creator.id === id);
     setCurrentEditItem(temp || []);
     setEditOrAdd("edit");
   };
+
+  useEffect(() => {
+    if (creators && creators.length > 0) {
+      setComponentLoaded(true);
+    }
+  }, [creators]);
 
   return (
     <DashBody bgColor="bg-white" hideOverflow={false} padding="p-0">
@@ -52,7 +58,7 @@ const Accounts: React.FC = () => {
           isLoading={loading}
         />
         {subscription?.plan === "tier-small-agencies" ||
-          (subscription?.plan === "tier-agencies" && (
+          (subscription?.plan === "tier-agencies" && componentLoaded && (
             <>
               <div
                 className={`${

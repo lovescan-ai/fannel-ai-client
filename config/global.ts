@@ -10,7 +10,7 @@ const config = {
         name: "Creator",
         id: "tier-creator",
         description: "Good to get started",
-        price: { monthly: "$39", annually: "$328" },
+        price: { monthly: "$39", annually: "$327.60" },
         yearlyPrice: 328,
         features: [
           "5,000 AI messages",
@@ -24,13 +24,13 @@ const config = {
         credits: 5000,
       },
       {
-        priceId: process.env.NEXT_PUBLIC_MASTER_PRICE_ID,
-        anualPriceId: process.env.NEXT_PUBLIC_MASTER_ANNUAL_PRICE_ID,
+        priceId: process.env.NEXT_PUBLIC_LEGEND_PRICE_ID,
+        anualPriceId: process.env.NEXT_PUBLIC_LEGEND_ANNUAL_PRICE_ID,
         name: "Small Agencies",
         id: "tier-small-agencies",
         description: "Perfect for small teams",
-        price: { monthly: "$159", annually: "$1336" },
-        yearlyPrice: 1336,
+        price: { monthly: "$159", annually: "$1,335.60" },
+        yearlyPrice: 50,
         features: [
           "25,000 AI messages",
           "24/7 automated response",

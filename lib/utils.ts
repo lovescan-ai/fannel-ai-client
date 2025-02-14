@@ -32,15 +32,9 @@ export const getGradientColor = (index: number) => {
     "bg-gradient-to-b from-pink-400 to-orange-500",
     "bg-gradient-to-b from-indigo-400 to-blue-500",
     "bg-gradient-to-b from-yellow-400 to-red-500",
-    "bg-gradient-to-b from-blue-400 to-purple-500",
-    "bg-gradient-to-b from-green-400 to-cyan-500",
-    "bg-gradient-to-b from-pink-400 to-orange-500",
-    "bg-gradient-to-b from-indigo-400 to-blue-500",
-    "bg-gradient-to-b from-yellow-400 to-red-500",
   ];
   return gradients[index % gradients.length];
 };
-
 export function nFormatter(
   num?: number,
   opts: { digits?: number; full?: boolean } = {

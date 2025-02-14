@@ -27,16 +27,16 @@ export const addOneHour = (date: Date) => {
 
 export const getGradientColor = (index: number) => {
   const gradients = [
-    "from-blue-400 to-purple-500",
-    "from-green-400 to-cyan-500",
-    "from-pink-400 to-orange-500",
-    "from-indigo-400 to-blue-500",
-    "from-yellow-400 to-red-500",
-    "from-blue-400 to-purple-500",
-    "from-green-400 to-cyan-500",
-    "from-pink-400 to-orange-500",
-    "from-indigo-400 to-blue-500",
-    "from-yellow-400 to-red-500",
+    "bg-gradient-to-b from-blue-400 to-purple-500",
+    "bg-gradient-to-b from-green-400 to-cyan-500",
+    "bg-gradient-to-b from-pink-400 to-orange-500",
+    "bg-gradient-to-b from-indigo-400 to-blue-500",
+    "bg-gradient-to-b from-yellow-400 to-red-500",
+    "bg-gradient-to-b from-blue-400 to-purple-500",
+    "bg-gradient-to-b from-green-400 to-cyan-500",
+    "bg-gradient-to-b from-pink-400 to-orange-500",
+    "bg-gradient-to-b from-indigo-400 to-blue-500",
+    "bg-gradient-to-b from-yellow-400 to-red-500",
   ];
   return gradients[index % gradients.length];
 };

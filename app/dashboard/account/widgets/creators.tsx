@@ -3,7 +3,7 @@ import Image from "next/image";
 import BasicButton from "@/components/elements/buttons/BasicButton";
 import { Creator } from "@prisma/client";
 import SkeletonLoader from "./skeleton";
-import { getGradientColor } from "@/lib/utils";
+import { cn, getGradientColor } from "@/lib/utils";
 
 const makeInitials = (name: string) => {
   return name
@@ -46,9 +46,10 @@ export default function Creators({
           className={`rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex gap-4 sm:flex-row sm:gap-6 justify-between w-full p-4 sm:p-6 relative overflow-hidden bg-white`}
         >
           <div
-            className={`absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b ${getGradientColor(
-              Number(account.id) ?? idx
-            )}`}
+            className={cn(
+              "absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b",
+              getGradientColor(Number(account.id) ?? idx)
+            )}
           ></div>
           <div className={"flex flex-row gap-3 sm:gap-4 items-center"}>
             {account?.profileImageUrl ? (

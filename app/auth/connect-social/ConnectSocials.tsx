@@ -123,7 +123,7 @@ const ConnectSocials = () => {
 
       <AuthText
         header={"Connect your social media"}
-        text={"Don't worry, you can connect other socials later"}
+        text={"Connect the Instagram account you want to use."}
         noButton
         noBorder
       />

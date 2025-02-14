@@ -41,7 +41,7 @@ const AuthText: React.FC<AuthTextProps> = ({
       <h2 className={`text-3xl mulish--bold text-brandDarkPurple1x pb-4`}>
         {header || "Sign Up"}
       </h2>
-      <p className={`text-lg mulish--regular`}>
+      <p className={`text-lg mulish--regular text-black`}>
         {text || "Manage all your conversations in one place."}
       </p>
       <div

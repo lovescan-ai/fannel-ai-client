@@ -456,12 +456,12 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
   );
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    const timer = setTimeout(() => {
       setComponentLoaded(true);
-    }, 1000);
+    }, 500);
 
     return () => {
-      clearTimeout(timeout);
+      clearTimeout(timer);
     };
   }, []);
 
@@ -474,7 +474,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
       {renderSection("follow_up")}
 
       {componentLoaded && (
-        <div className="md:absolute md:block hidden md:right-4 md:top-0 max-w-lg w-[340px] bg-white transition-all ease-in-out duration-300">
+        <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300">
           <InstagramPreview
             greetingMessage={settings.custom_greeting_msg}
             ctaMessage={settings.cta_message}

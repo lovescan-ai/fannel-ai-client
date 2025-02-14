@@ -246,7 +246,8 @@ export const updateCreator = async (
     });
     if (
       data.onlyFansUrl !== existingCreator?.onlyFansUrl &&
-      data.onlyFansUrl !== null
+      data.onlyFansUrl &&
+      data.onlyFansUrl.length > 0
     ) {
       const link = await getOrCreateDubLink(creatorId, data.onlyFansUrl || "");
       data.onlyFansUrl = link.shortLink;

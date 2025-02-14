@@ -47,7 +47,7 @@ export default function Creators({
         >
           <div
             className={cn(
-              "absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b",
+              "absolute left-0 top-0 bottom-0 w-2",
               getGradientColor(Number(account.id) ?? idx)
             )}
           ></div>

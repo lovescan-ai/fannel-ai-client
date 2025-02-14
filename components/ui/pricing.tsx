@@ -1,14 +1,10 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { Loader2, User } from "lucide-react";
 import config from "@/config/global";
 import useReadUser from "@/lib/hooks/use-read-user";
 import { useRealtimeSubscription } from "@/lib/hooks/use-subscription";
 import { usePathname, useRouter } from "next/navigation";
 import CircularPreloader from "./preloader";
-import CheckmarkIcon from "./icons/checkmark";
-import Button from "./button";
-import ToggleSwitch from "./switch2";
 import { PricingCard, PricingToggle } from "./pricing-card";
 type FrequencyOption = "monthly" | "annually";
 

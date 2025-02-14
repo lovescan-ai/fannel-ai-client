@@ -9,23 +9,31 @@ const CREATOR_STEP = 5;
 const MESSAGES_PER_CREATOR = 5000;
 const MIN_CREATORS = 10;
 const AMOUNT_PER_CREATOR = 20;
-const MIN_PRICE = 40;
+const MESSAGES_PER_PACK = 2500;
+const AMOUNT_PER_MESSAGE_PACK = 10;
 
 export default function CreatorPricingSlider() {
-  const [price, setPrice] = useState(MIN_PRICE);
   const [creators, setCreators] = useState(MIN_CREATORS);
-  const [messages, setMessages] = useState(MESSAGES_PER_CREATOR * 2);
+  const [messagePacks, setMessagePacks] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [displayValues, setDisplayValues] = useState({
-    price: MIN_PRICE,
     creators: MIN_CREATORS,
-    messages: MESSAGES_PER_CREATOR * 2,
+    messagePacks: 0,
   });
 
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const messages = Math.round(
+    displayValues.creators * MESSAGES_PER_CREATOR +
+      displayValues.messagePacks * MESSAGES_PER_PACK
+  );
+  const price = Math.round(
+    displayValues.creators * AMOUNT_PER_CREATOR +
+      displayValues.messagePacks * AMOUNT_PER_MESSAGE_PACK
+  );
+
   const animateValues = (startValues: any, endValues: any) => {
-    const duration = 300; // Animation duration in ms
+    const duration = 300;
     const steps = 20;
     const stepDuration = duration / steps;
     let currentStep = 0;
@@ -35,14 +43,12 @@ export default function CreatorPricingSlider() {
       const progress = currentStep / steps;
 
       setDisplayValues({
-        price:
-          startValues.price + (endValues.price - startValues.price) * progress,
         creators:
           startValues.creators +
           (endValues.creators - startValues.creators) * progress,
-        messages:
-          startValues.messages +
-          (endValues.messages - startValues.messages) * progress,
+        messagePacks:
+          startValues.messagePacks +
+          (endValues.messagePacks - startValues.messagePacks) * progress,
       });
 
       if (currentStep < steps) {
@@ -59,37 +65,31 @@ export default function CreatorPricingSlider() {
     animate();
   };
 
-  const handleIncrease = () => {
-    const newCreators = creators + CREATOR_STEP;
-    const newMessages = messages + MESSAGES_PER_CREATOR;
-    const newPrice = price + AMOUNT_PER_CREATOR;
+  const handleCreatorsChange = (operation: "increase" | "decrease") => {
+    const newCreators =
+      operation === "increase"
+        ? creators + CREATOR_STEP
+        : creators - CREATOR_STEP;
+
+    if (newCreators < MIN_CREATORS) return;
 
     setCreators(newCreators);
-    setMessages(newMessages);
-    setPrice(newPrice);
-
     animateValues(displayValues, {
       creators: newCreators,
-      messages: newMessages,
-      price: newPrice,
+      messagePacks: messagePacks,
     });
   };
 
-  const handleDecrease = () => {
-    if (creators <= MIN_CREATORS) return;
+  const handleMessagePacksChange = (operation: "increase" | "decrease") => {
+    const newMessagePacks =
+      operation === "increase" ? messagePacks + 1 : messagePacks - 1;
 
-    const newCreators = creators - CREATOR_STEP;
-    const newMessages = messages - MESSAGES_PER_CREATOR;
-    const newPrice = price - AMOUNT_PER_CREATOR;
+    if (newMessagePacks < 0) return;
 
-    setCreators(newCreators);
-    setMessages(newMessages);
-    setPrice(newPrice);
-
+    setMessagePacks(newMessagePacks);
     animateValues(displayValues, {
-      creators: newCreators,
-      messages: newMessages,
-      price: newPrice,
+      creators: creators,
+      messagePacks: newMessagePacks,
     });
   };
 
@@ -102,15 +102,19 @@ export default function CreatorPricingSlider() {
           successUrl: window.location.href,
           cancelUrl: window.location.href,
           mode: "payment",
-          price,
-          credits: messages,
+          price: Math.round(
+            creators * AMOUNT_PER_CREATOR +
+              messagePacks * AMOUNT_PER_MESSAGE_PACK
+          ),
+          credits: Math.round(
+            creators * MESSAGES_PER_CREATOR + messagePacks * MESSAGES_PER_PACK
+          ),
           tierType: "tier-agencies",
         }),
       });
 
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
-      }
 
       const data = await response.json();
       window.location.href = data.url;
@@ -126,9 +130,7 @@ export default function CreatorPricingSlider() {
 
   useEffect(() => {
     return () => {
-      if (animationTimeoutRef.current) {
-        clearTimeout(animationTimeoutRef.current);
-      }
+      animationTimeoutRef.current && clearTimeout(animationTimeoutRef.current);
     };
   }, []);
 
@@ -139,7 +141,6 @@ export default function CreatorPricingSlider() {
         <div className="space-y-4 sm:w-[85%] w-full flex flex-col">
           <div className="flex-grow space-y-4">
             <Trophy className="h-8 w-8 md:h-10 md:w-10 text-black" />
-
             <div className="space-y-2">
               <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-black">
                 Big Agencies
@@ -176,14 +177,14 @@ export default function CreatorPricingSlider() {
               <div className="flex items-center justify-between rounded-xl bg-[#F2F2F2] p-2.5 md:p-3">
                 <MinusIcon
                   className="h-5 w-5 md:h-6 md:w-6 cursor-pointer text-black hover:opacity-70 transition-opacity"
-                  onClick={handleDecrease}
+                  onClick={() => handleCreatorsChange("decrease")}
                 />
                 <span className="text-md text-black">
                   {Math.round(displayValues.creators)} creators
                 </span>
                 <PlusIcon
                   className="h-5 w-5 md:h-6 md:w-6 cursor-pointer text-black hover:opacity-70 transition-opacity"
-                  onClick={handleIncrease}
+                  onClick={() => handleCreatorsChange("increase")}
                 />
               </div>
             </div>
@@ -192,15 +193,25 @@ export default function CreatorPricingSlider() {
               <p className="text-md text-black">
                 How many messages do you need?
               </p>
-              <div className="flex items-center justify-center rounded-xl bg-[#F2F2F2] text-black p-2.5 md:p-3 text-sm">
-                {nFormatter(Math.round(displayValues.messages), { full: true })}
+              <div className="flex items-center justify-between rounded-xl bg-[#F2F2F2] p-2.5 md:p-3">
+                <MinusIcon
+                  className="h-5 w-5 md:h-6 md:w-6 cursor-pointer text-black hover:opacity-70 transition-opacity"
+                  onClick={() => handleMessagePacksChange("decrease")}
+                />
+                <span className="text-md text-black">
+                  {nFormatter(messages, { full: true })}
+                </span>
+                <PlusIcon
+                  className="h-5 w-5 md:h-6 md:w-6 cursor-pointer text-black hover:opacity-70 transition-opacity"
+                  onClick={() => handleMessagePacksChange("increase")}
+                />
               </div>
             </div>
           </div>
 
           <div className="flex justify-end">
             <p className="text-xl md:text-2xl font-bold text-black">
-              {formatPrice(Math.round(displayValues.price))}
+              {formatPrice(price)}
               <span className="text-xs md:text-sm font-normal text-black">
                 /month
               </span>

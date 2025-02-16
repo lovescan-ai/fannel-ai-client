@@ -53,8 +53,6 @@ export const useGetAccessToken = (page?: "account") => {
                 connectedInstagram: true,
                 connectedCreator: true,
                 isActive: true,
-                instagramProfileId: data.recipient_id,
-                instagramUsername: data.username,
               },
             }),
             updateUser({

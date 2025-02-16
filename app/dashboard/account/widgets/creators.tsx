@@ -48,7 +48,7 @@ export default function Creators({
           <div
             className={cn(
               "absolute left-0 top-0 bottom-0 w-2",
-              getGradientColor(Number(account.id) ?? idx)
+              getGradientColor(idx)
             )}
           ></div>
           <div className={"flex flex-row gap-3 sm:gap-4 items-center"}>

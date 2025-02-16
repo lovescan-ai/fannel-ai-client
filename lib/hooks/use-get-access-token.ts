@@ -11,6 +11,9 @@ interface AccessTokenResponse {
   message: string;
   user_id: string;
   access_token: string;
+  short_lived_token: string;
+  recipient_id: string;
+  username: string;
 }
 
 interface GetAccessTokenParams {
@@ -50,6 +53,8 @@ export const useGetAccessToken = (page?: "account") => {
                 connectedInstagram: true,
                 connectedCreator: true,
                 isActive: true,
+                instagramProfileId: data.recipient_id,
+                instagramUsername: data.username,
               },
             }),
             updateUser({

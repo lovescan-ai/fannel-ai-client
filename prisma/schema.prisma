@@ -41,6 +41,8 @@ model Creator {
   messageLimit             Int?
   instagramAccessToken     String?
   instagramRefreshToken    String?
+  instagramUsername        String?
+  instagramProfileId       String?
   instagramAccountId       String?           @unique
   createdAt                DateTime          @default(now())
   updatedAt                DateTime          @updatedAt

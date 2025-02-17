@@ -17,6 +17,7 @@ import { createClient } from "./server";
 import { headers } from "next/headers";
 import { Dub } from "dub";
 import { LinkSchema } from "dub/dist/commonjs/models/components";
+import { isValidUrl } from "../utils";
 
 const dub = new Dub({
   token: process.env.NEXT_PUBLIC_DUB_API_KEY,
@@ -247,9 +248,10 @@ export const updateCreator = async (
     if (
       data.onlyFansUrl !== existingCreator?.onlyFansUrl &&
       data.onlyFansUrl &&
-      data.onlyFansUrl.length > 0
+      data.onlyFansUrl.length > 0 &&
+      isValidUrl(data.onlyFansUrl)
     ) {
-      const link = await getOrCreateDubLink(creatorId, data.onlyFansUrl || "");
+      const link = await getOrCreateDubLink(creatorId, data.onlyFansUrl);
       data.onlyFansUrl = link.shortLink;
     }
     const creator = await prisma.creator.update({

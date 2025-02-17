@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import axios from "axios";
 import apiClient from "@/utils/axios";
 import { readPageTracker } from "../kv/actions";
+import { readUserData } from "../supabase/readUser";
+import { getCreator, getUserById } from "../supabase/action";
 
 interface AccessTokenResponse {
   message: string;
@@ -34,6 +36,10 @@ export const useGetAccessToken = (page?: "account") => {
       setError(null);
 
       try {
+        if (!creatorId) {
+          toast.error("Creator ID is required");
+          return;
+        }
         toast.loading("Connecting instagram account...");
 
         const { data } = await apiClient.get<AccessTokenResponse>(
@@ -61,11 +67,15 @@ export const useGetAccessToken = (page?: "account") => {
           ]);
 
           const kv = await readPageTracker();
-
-          if (kv.nextPage) {
-            router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
+          const creator = await getCreator(creatorId);
+          if (creator?.name && creator?.gender && creator?.onlyFansUrl) {
+            router.push("/dashboard/account");
           } else {
-            window.close();
+            if (kv.nextPage) {
+              router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
+            } else {
+              window.close();
+            }
           }
         }
         toast.success("Instagram account connected successfully");

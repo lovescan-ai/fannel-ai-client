@@ -73,7 +73,7 @@ const HowItWorks = () => {
                   {<step.icon className="w-6 h-6 text-brandBlue4x" />}
                 </motion.div>
                 <motion.span
-                  className={`ml-4 font-bold text-2xl mulish--regular`}
+                  className={`ml-4 font-bold text-2xl mulish--regular text-black`}
                   initial={{ opacity: 0.7 }}
                   animate={{ opacity: index === currentStepIndex ? 1 : 0.7 }}
                   transition={{ duration: 0.3 }}

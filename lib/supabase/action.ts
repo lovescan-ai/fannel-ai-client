@@ -242,18 +242,18 @@ export const updateCreator = async (
   data: Partial<Creator>
 ): Promise<{ success: boolean; creator?: Creator; error?: string }> => {
   try {
-    const existingCreator = await prisma.creatorLink.findFirst({
-      where: { creatorId, shortLink: data.onlyFansUrl as string },
-    });
-    if (
-      data.onlyFansUrl !== existingCreator?.shortLink &&
-      data.onlyFansUrl &&
-      data.onlyFansUrl.length > 0 &&
-      isValidUrl(data.onlyFansUrl)
-    ) {
-      const link = await getOrCreateDubLink(creatorId, data.onlyFansUrl);
-      data.onlyFansUrl = link.shortLink;
-    }
+    // const existingCreator = await prisma.creatorLink.findFirst({
+    //   where: { creatorId, shortLink: data.onlyFansUrl as string },
+    // });
+    // if (
+    //   data.onlyFansUrl !== existingCreator?.shortLink &&
+    //   data.onlyFansUrl &&
+    //   data.onlyFansUrl.length > 0 &&
+    //   isValidUrl(data.onlyFansUrl)
+    // ) {
+    //   const link = await getOrCreateDubLink(creatorId, data.onlyFansUrl);
+    //   data.onlyFansUrl = link.shortLink;
+    // }
     const creator = await prisma.creator.update({
       where: { id: creatorId },
       data,

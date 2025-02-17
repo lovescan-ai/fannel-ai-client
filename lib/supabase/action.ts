@@ -242,18 +242,18 @@ export const updateCreator = async (
   data: Partial<Creator>
 ): Promise<{ success: boolean; creator?: Creator; error?: string }> => {
   try {
-    // const existingCreator = await prisma.creatorLink.findFirst({
-    //   where: { creatorId, shortLink: data.onlyFansUrl as string },
-    // });
-    // if (
-    //   data.onlyFansUrl !== existingCreator?.shortLink &&
-    //   data.onlyFansUrl &&
-    //   data.onlyFansUrl.length > 0 &&
-    //   isValidUrl(data.onlyFansUrl)
-    // ) {
-    //   const link = await getOrCreateDubLink(creatorId, data.onlyFansUrl);
-    //   data.onlyFansUrl = link.shortLink;
-    // }
+    const existingCreator = await prisma.creatorLink.findFirst({
+      where: { creatorId, shortLink: data.onlyFansUrl as string },
+    });
+    if (
+      data.onlyFansUrl !== existingCreator?.shortLink &&
+      data.onlyFansUrl &&
+      data.onlyFansUrl.length > 0 &&
+      isValidUrl(data.onlyFansUrl)
+    ) {
+      const link = await getOrCreateDubLink(creatorId, data.onlyFansUrl);
+      data.onlyFansUrl = link.shortLink;
+    }
     const creator = await prisma.creator.update({
       where: { id: creatorId },
       data,
@@ -511,7 +511,12 @@ export const updateCreatorSettings = async (
   }
   return prisma.$transaction(
     async (tx) => {
-      if (ctaData.ctaButtonLink !== creator.ctaSettings?.ctaButtonLink) {
+      if (
+        ctaData.ctaButtonLink !== creator.ctaSettings?.ctaButtonLink &&
+        ctaData.ctaButtonLink &&
+        ctaData.ctaButtonLink.length > 0 &&
+        isValidUrl(ctaData.ctaButtonLink)
+      ) {
         const ctaTrackableLink = await dub.links.create({
           url: ctaData.ctaButtonLink as string,
         });
@@ -528,7 +533,10 @@ export const updateCreatorSettings = async (
 
       if (
         followUpData.followUpButtonLink !==
-        creator.followUpSettings?.followUpButtonLink
+          creator.followUpSettings?.followUpButtonLink &&
+        followUpData.followUpButtonLink &&
+        followUpData.followUpButtonLink.length > 0 &&
+        isValidUrl(followUpData.followUpButtonLink)
       ) {
         const followUpTrackableLink = await dub.links.create({
           url: followUpData.followUpButtonLink as string,

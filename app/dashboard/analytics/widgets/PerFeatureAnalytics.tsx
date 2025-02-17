@@ -8,7 +8,9 @@ interface PerFeatureAnalyticsProps {
   data: Array<{
     id: string;
     name: string;
-    totalDMs?: number;
+    totalDMs?: {
+      totalDMs: number;
+    };
     totalGreetings?: number;
     totalFollowUps?: number;
   }>;
@@ -56,7 +58,13 @@ const PerFeatureAnalytics: React.FC<PerFeatureAnalyticsProps> = ({
               <div className={`flex flex-row items-center gap-2`}>
                 {stat.name}
               </div>
-              <p className={`mulish--bold text-xl`}>{stat[value] ?? 0}</p>
+              <p className={`mulish--bold text-xl`}>
+                {value === "totalDMs"
+                  ? stat.totalDMs?.totalDMs
+                  : value === "totalGreetings"
+                  ? stat.totalGreetings
+                  : stat.totalFollowUps}
+              </p>
             </div>
           ))
         )}

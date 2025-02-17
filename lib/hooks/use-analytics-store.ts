@@ -304,6 +304,7 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
           params: { userId, ...(timeFilter && { timeFilter }) },
         }
       );
+      console.log("> All creators total DMs", response.data.dmCounts);
       set({ allCreatorsTotalDMs: response.data.dmCounts });
     } catch (error) {
       set({ error: "Failed to get all creators total DMs" });

@@ -5,15 +5,13 @@ import {
   deleteCreator,
   getAllCreators,
   getCreator,
-  getOrCreateDubLink,
   updateCreator,
 } from "../supabase/action";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Creator, Gender } from "@prisma/client";
 import { toast } from "sonner";
 import { InferSubscription, useRealtimeSubscription } from "./use-subscription";
 import useReadUser from "./use-read-user";
-import apiClient from "@/utils/axios";
 
 export const useGetCreator = () => {
   const { user } = useReadUser();

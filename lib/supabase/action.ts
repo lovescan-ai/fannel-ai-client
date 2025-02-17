@@ -405,19 +405,6 @@ export const creatorList = async (): Promise<
   return results;
 };
 
-export async function getConversations(creatorId: string) {
-  const results = await prisma.conversation.findMany({
-    where: { creatorId },
-    include: {
-      messages: {
-        orderBy: { timestamp: "desc" },
-      },
-    },
-    orderBy: { lastMessageAt: "desc" },
-  });
-  return results;
-}
-
 export const createSubscription = async (
   data: Subscription
 ): Promise<Subscription> => {

@@ -73,3 +73,14 @@ export const formatPrice = (amount: number) => {
     minimumFractionDigits: 0,
   }).format(amount);
 };
+
+export const isValidUrl = (url: string): boolean => {
+  try {
+    const parsedUrl = new URL(url);
+
+    // Check for http or https protocol
+    return ["http:", "https:"].includes(parsedUrl.protocol);
+  } catch (error) {
+    return false;
+  }
+};

@@ -242,11 +242,11 @@ export const updateCreator = async (
   data: Partial<Creator>
 ): Promise<{ success: boolean; creator?: Creator; error?: string }> => {
   try {
-    const existingCreator = await prisma.creator.findUnique({
-      where: { id: creatorId },
+    const existingCreator = await prisma.creatorLink.findFirst({
+      where: { creatorId, shortLink: data.onlyFansUrl as string },
     });
     if (
-      data.onlyFansUrl !== existingCreator?.onlyFansUrl &&
+      data.onlyFansUrl !== existingCreator?.shortLink &&
       data.onlyFansUrl &&
       data.onlyFansUrl.length > 0 &&
       isValidUrl(data.onlyFansUrl)

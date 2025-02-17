@@ -299,7 +299,11 @@ const AnalyticsPage: React.FC = () => {
             <PerFeatureAnalytics
               id={"dm"}
               icon={dmIcon}
-              data={allCreatorsTotalDMs}
+              data={allCreatorsTotalDMs.map((dm) => ({
+                id: dm.id,
+                name: dm.name,
+                totalDMs: { totalDMs: dm.totalDMs },
+              }))}
               value="totalDMs"
               isLoading={isLoading}
             />

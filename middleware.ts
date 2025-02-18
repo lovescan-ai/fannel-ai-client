@@ -2,10 +2,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
+  console.log("middleware running");
   const { supabase, response } = createClient(request);
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  console.log("authenticated user", user);
 
   const subscription = await supabase
     .from("subscriptions")

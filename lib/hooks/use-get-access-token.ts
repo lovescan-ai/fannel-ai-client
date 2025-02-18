@@ -47,12 +47,13 @@ export const useGetAccessToken = (page?: "account") => {
           }
         );
 
-        if (data.access_token) {
+        if (data.access_token || data.short_lived_token) {
           await Promise.all([
             mutate({
               creatorId,
               data: {
-                instagramAccessToken: data.access_token,
+                instagramAccessToken:
+                  data.access_token || data.short_lived_token,
                 instagramAccountId: data.user_id.toString(),
                 connectedInstagram: true,
                 connectedCreator: true,

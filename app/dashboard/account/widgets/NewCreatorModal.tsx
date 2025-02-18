@@ -340,7 +340,12 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
             type={creator?.connectedCreator ? "edit" : "add"}
             isDisconnecting={isDisconnecting}
             isConnecting={isConnecting}
-            disconnectSocial={() => {
+            disconnectSocial={async () => {
+              await pageTracker({
+                creatorId: creator?.id as string,
+                previousPage: "/dashboard/account",
+                isDisconnected: true,
+              });
               disconnectSocial({ creatorId: creator?.id as string });
               router.push("/dashboard/account");
             }}

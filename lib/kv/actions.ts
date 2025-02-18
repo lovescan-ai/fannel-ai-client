@@ -25,6 +25,7 @@ export async function pageTracker({
   creatorId,
   previousPage,
   nextPage,
+  isDisconnected = false,
 }: PageTracker) {
   await deletePageTracker();
   const pageTracker = await kvClient.set(
@@ -33,7 +34,7 @@ export async function pageTracker({
       previousPage,
       creatorId,
       nextPage,
-      isDisconnected: false,
+      isDisconnected,
     },
     { ex: 60 * 5 }
   );

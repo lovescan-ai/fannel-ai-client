@@ -58,6 +58,7 @@ export const useGetAccessToken = (page?: "account") => {
                 connectedInstagram: true,
                 connectedCreator: true,
                 isActive: true,
+                maxCredit: 5000,
               },
             }),
             updateUser({

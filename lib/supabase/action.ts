@@ -18,6 +18,7 @@ import { headers } from "next/headers";
 import { Dub } from "dub";
 import { LinkSchema } from "dub/dist/commonjs/models/components";
 import { isValidUrl } from "../utils";
+import { pageTracker } from "../kv/actions";
 
 const dub = new Dub({
   token: process.env.NEXT_PUBLIC_DUB_API_KEY,
@@ -85,6 +86,11 @@ export const disconnectInstagram = async (creatorId: string) => {
   }
   try {
     console.log("Disconnecting Instagram for creator:", creatorId);
+    await pageTracker({
+      creatorId,
+      previousPage: "/dashboard/account",
+      isDisconnected: true,
+    });
     const response = await prisma.creator.update({
       where: {
         id: creatorId,

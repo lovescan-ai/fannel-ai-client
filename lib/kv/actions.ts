@@ -61,6 +61,7 @@ export async function saveUserInfoKv(user: User) {
 
 export async function readUserInfoKv() {
   const res = await kvClient.get(`user-info`);
+  console.log("user info", res);
   return res as unknown as User;
 }
 

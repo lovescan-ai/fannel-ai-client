@@ -247,7 +247,11 @@ export const updateCreator = async (
   creatorId: string,
   data: Partial<Creator>
 ): Promise<{ success: boolean; creator?: Creator; error?: string }> => {
+  console.log("Updating creator", creatorId, data);
   try {
+    if (!creatorId) {
+      throw new Error("Creator ID is required");
+    }
     const existingCreator = await prisma.creatorLink.findFirst({
       where: { creatorId, shortLink: data.onlyFansUrl as string },
     });

@@ -24,7 +24,6 @@ import useBroadcastChannel from "@/lib/hooks/use-broadcast-channel";
 import { useGetAccessToken } from "@/lib/hooks/use-get-access-token";
 import { toast } from "sonner";
 import { pageTracker } from "@/lib/kv/actions";
-import { updateCreator } from "@/lib/supabase/action";
 import { UseMutateFunction } from "@tanstack/react-query";
 interface FormData {
   creator_name: string;
@@ -343,7 +342,7 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
             isConnecting={isConnecting}
             disconnectSocial={() => {
               disconnectSocial({ creatorId: creator?.id as string });
-              window.location.reload();
+              router.push("/dashboard/account");
             }}
           />
           <FormActions isLoading={isPending} onCancel={() => setType("")} />

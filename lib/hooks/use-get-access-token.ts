@@ -67,7 +67,7 @@ export const useGetAccessToken = (page?: "account") => {
           const kv = await readPageTracker();
 
           if (kv.isDisconnected) {
-            router.push("/dashboard/account");
+            router.push(kv.previousPage);
           } else {
             if (kv.nextPage) {
               router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);

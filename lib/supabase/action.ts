@@ -771,6 +771,7 @@ export async function getUserData(): Promise<
     } = await readUserData();
 
     if (!authData) {
+      console.log(authData);
       console.log("No authenticated user found");
       throw new Error("No authenticated user found");
     }
@@ -789,6 +790,7 @@ export async function getUserData(): Promise<
       name: user.name || "",
     };
 
+    console.log("safeUser", safeUser);
     const creator = await findOrCreateCreator(safeUser);
 
     // Handle various states

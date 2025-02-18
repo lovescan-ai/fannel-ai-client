@@ -76,8 +76,9 @@ export const useGetAccessToken = (page?: "account") => {
               window.close();
             }
           }
+
+          toast.success("Instagram account connected successfully");
         }
-        toast.success("Instagram account connected successfully");
       } catch (err) {
         setError(
           axios.isAxiosError(err)

@@ -35,13 +35,6 @@ const InstagramCallback = () => {
         });
 
         setProgress("Authorization complete! Redirecting...");
-
-        if (kv.nextPage) {
-          router.push(`${kv.nextPage}?id=${kv.creatorId}`);
-        } else {
-          window.close();
-        }
-
         setIsProcessing(false);
       } catch (err) {
         setError(

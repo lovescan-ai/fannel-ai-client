@@ -5,6 +5,7 @@ interface PageTracker {
   creatorId: string;
   previousPage: string;
   nextPage?: string;
+  isDisconnected?: boolean;
 }
 
 interface User {
@@ -32,6 +33,7 @@ export async function pageTracker({
       previousPage,
       creatorId,
       nextPage,
+      isDisconnected: false,
     },
     { ex: 60 * 5 }
   );

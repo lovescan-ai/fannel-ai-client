@@ -6,8 +6,6 @@ import { toast } from "sonner";
 import axios from "axios";
 import apiClient from "@/utils/axios";
 import { readPageTracker } from "../kv/actions";
-import { readUserData } from "../supabase/readUser";
-import { getCreator, getUserById } from "../supabase/action";
 
 interface AccessTokenResponse {
   message: string;
@@ -67,9 +65,9 @@ export const useGetAccessToken = (page?: "account") => {
           ]);
 
           const kv = await readPageTracker();
-          const creator = await getCreator(creatorId);
-          if (creator?.name && creator?.gender && creator?.onlyFansUrl) {
-            router.push("/dashboard/account");
+
+          if (kv.isDisconnected) {
+            router.push(kv.previousPage);
           } else {
             if (kv.nextPage) {
               router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);

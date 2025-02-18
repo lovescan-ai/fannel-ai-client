@@ -67,15 +67,13 @@ export const useGetAccessToken = (page?: "account") => {
           ]);
 
           const kv = await readPageTracker();
-
           if (kv.isDisconnected) {
             router.push(kv.previousPage);
+          }
+          if (kv.nextPage && kv.nextPage.length > 0) {
+            router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
           } else {
-            if (kv.nextPage && kv.nextPage.length > 0) {
-              router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
-            } else {
-              window.close();
-            }
+            window.close();
           }
 
           toast.success("Instagram account connected successfully");

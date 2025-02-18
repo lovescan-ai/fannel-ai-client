@@ -111,6 +111,7 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
         await pageTracker({
           creatorId: creator?.id as string,
           previousPage: "/dashboard/account",
+          isDisconnected: false,
         });
         connectSocial();
         setIsConnecting(false);
@@ -118,6 +119,7 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
       await pageTracker({
         creatorId: creator?.id as string,
         previousPage: "/dashboard/account",
+        isDisconnected: false,
       });
       connectSocial();
       setIsConnecting(false);

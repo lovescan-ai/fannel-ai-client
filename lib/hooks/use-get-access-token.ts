@@ -69,7 +69,7 @@ export const useGetAccessToken = (page?: "account") => {
           if (kv.isDisconnected) {
             router.push(kv.previousPage);
           } else {
-            if (kv.nextPage) {
+            if (kv.nextPage && kv.nextPage.length > 0) {
               router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
             } else {
               window.close();

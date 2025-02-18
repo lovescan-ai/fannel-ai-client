@@ -1,7 +1,7 @@
 "use client";
 
 import AuthText from "@/components/elements/sections/AuthText";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
@@ -11,6 +11,7 @@ import FormSelect from "@/components/elements/form/FormSelect";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUpdateCreator } from "@/lib/hooks/use-creator";
 import { Gender } from "@prisma/client";
+import { readPageTracker } from "@/lib/kv/actions";
 
 YupPassword(Yup);
 
@@ -71,6 +72,16 @@ const CreatorDetails = () => {
     });
     router.push("pricing");
   };
+
+  useEffect(() => {
+    async function fetchCreator() {
+      const kv = await readPageTracker();
+      if (kv.isDisconnected) {
+        router.push(kv.previousPage);
+      }
+    }
+    fetchCreator();
+  }, []);
 
   return (
     <div>

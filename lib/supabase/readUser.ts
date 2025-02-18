@@ -4,5 +4,8 @@ import { createClient } from "./server";
 
 export async function readUserData() {
   const supabase = createClient();
-  return await supabase.auth.getUser();
+  const data = await supabase.auth.getUser();
+
+  console.log("Authenticated data", data);
+  return data;
 }

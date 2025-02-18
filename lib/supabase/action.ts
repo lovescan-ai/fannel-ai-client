@@ -251,6 +251,7 @@ export const updateCreator = async (
     const existingCreator = await prisma.creatorLink.findFirst({
       where: { creatorId, shortLink: data.onlyFansUrl as string },
     });
+    console.log("existingCreator", existingCreator);
     if (
       data.onlyFansUrl !== existingCreator?.shortLink &&
       data.onlyFansUrl &&

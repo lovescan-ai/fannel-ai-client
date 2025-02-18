@@ -154,6 +154,11 @@ export const useUpdateCreator = () => {
     }) => {
       toast.loading("Updating creator");
 
+      if (!user) {
+        toast.error("User not found");
+        throw new Error("User not found");
+      }
+
       if (subscription) {
         await checkCredits(
           subscription as InferSubscription,

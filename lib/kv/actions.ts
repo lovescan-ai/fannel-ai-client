@@ -48,6 +48,7 @@ export async function readPageTracker() {
 }
 
 export async function deletePageTracker() {
+  console.log("deleting page tracker ❌");
   const pageTracker = await kvClient.del(`page-tracker`);
   return pageTracker;
 }

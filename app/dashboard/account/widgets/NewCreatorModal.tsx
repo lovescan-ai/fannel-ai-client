@@ -341,13 +341,12 @@ const NewCreatorModal: React.FC<NewCreatorModalProps> = ({
             isDisconnecting={isDisconnecting}
             isConnecting={isConnecting}
             disconnectSocial={async () => {
-              await pageTracker({
-                creatorId: creator?.id as string,
-                previousPage: "/dashboard/account",
-                isDisconnected: true,
-              });
-              disconnectSocial({ creatorId: creator?.id as string });
-              router.push("/dashboard/account");
+              if (creator?.id) {
+                disconnectSocial({ creatorId: creator?.id as string });
+                router.push("/dashboard/account");
+              } else {
+                toast.error("Creator not found");
+              }
             }}
           />
           <FormActions isLoading={isPending} onCancel={() => setType("")} />

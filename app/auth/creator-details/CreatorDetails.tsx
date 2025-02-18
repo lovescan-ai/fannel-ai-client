@@ -76,7 +76,9 @@ const CreatorDetails = () => {
   useEffect(() => {
     async function fetchCreator() {
       const kv = await readPageTracker();
+      console.log("> KV", kv);
       if (kv.isDisconnected) {
+        console.log("> Pushing to", kv);
         router.push(kv.previousPage);
       }
     }

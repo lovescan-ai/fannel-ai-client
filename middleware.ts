@@ -21,7 +21,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/pricing", request.url));
   }
 
-  if (subscription.data?.status === "canceled") {
+  if (
+    subscription.data?.status === "canceled" &&
+    subscription.data?.credits <= 0
+  ) {
     return NextResponse.redirect(new URL("/auth/pricing", request.url));
   }
 

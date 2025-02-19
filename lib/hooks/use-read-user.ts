@@ -18,7 +18,7 @@ const useReadUser = () => {
         setLoading(true);
         const { data } = await supabase.auth.getSession();
         setSession(data.session);
-        console.log("data", data);
+        console.log("authenticating user data rn", data);
         setUser(data.session?.user ?? null);
       } catch (error) {
         setError(error as Error);

@@ -776,7 +776,6 @@ export async function getUserData(): Promise<
     } = await readUserData();
 
     if (!authData) {
-      console.log(authData);
       console.log("No authenticated user found");
       throw new Error("No authenticated user found");
     }

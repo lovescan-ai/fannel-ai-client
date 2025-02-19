@@ -91,7 +91,7 @@ export const useGetAccessToken = (page?: "account") => {
           } catch (navError) {
             console.error("Navigation error:", navError);
           }
-        }, 100);
+        }, 10000);
 
         toast.success("Instagram account connected successfully");
       } catch (err) {

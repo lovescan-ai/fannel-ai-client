@@ -48,6 +48,8 @@ export const useGetAccessToken = (page?: "account") => {
         );
 
         if (data.access_token || data.short_lived_token) {
+          console.log("data", data);
+          console.log("creatorId", creatorId);
           await Promise.all([
             mutate({
               creatorId,
@@ -66,15 +68,15 @@ export const useGetAccessToken = (page?: "account") => {
             }),
           ]);
 
-          const kv = await readPageTracker();
-          if (kv.isDisconnected) {
-            router.push(kv.previousPage);
-          }
-          if (kv.nextPage && kv.nextPage.length > 0) {
-            router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
-          } else {
-            window.close();
-          }
+          // const kv = await readPageTracker();
+          // if (kv.isDisconnected) {
+          //   router.push(kv.previousPage);
+          // }
+          // if (kv.nextPage && kv.nextPage.length > 0) {
+          //   router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
+          // } else {
+          //   window.close();
+          // }
 
           toast.success("Instagram account connected successfully");
         }

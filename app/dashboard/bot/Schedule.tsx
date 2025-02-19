@@ -71,43 +71,51 @@ const Schedule = ({ creatorId }: { creatorId: string }) => {
           <MessageHeader type="schedule" />
         </div>
 
-        {schedules.map((schedule) =>
-          editingScheduleId === schedule.id ||
-          (isCreatingNewSchedule && newScheduleId === schedule.id) ? (
-            <ScheduleItem
-              key={schedule.id}
-              schedule={schedule as ScheduleItemType}
-              botSettingsLoading={botSettingsLoading}
-              creatorId={creatorId}
-              onCancel={
-                schedule.id === newScheduleId
-                  ? handleCancelCreate
-                  : handleCancelEdit
-              }
-            />
-          ) : (
-            <BotCardWrap key={schedule.id}>
-              <div className="flex items-center justify-between w-full">
-                <p className="mulish--semibold text-lg">
-                  {schedule.scheduleName}
-                </p>
-                <div className="flex items-center space-x-2">
-                  <BasicButton
-                    width="w-fit hover:scale-90 duration-300 transition-all ease-in-out"
-                    fontType="mulish--semibold"
-                    textColor="text-brandBlue4x"
-                    fontSize="text-md"
-                    borderRadius="rounded-lg"
-                    padding="py-2 px-7"
-                    text="Edit"
-                    bgColor="bg-brandBlue4x/10"
-                    handleClick={() => handleEditClick(schedule.id ?? "")}
-                  />
-                </div>
-              </div>
-            </BotCardWrap>
+        {schedules
+          .filter(
+            (schedule) =>
+              !schedule.scheduleName &&
+              !schedule.scheduleStart &&
+              !schedule.scheduleEnd &&
+              !schedule.scheduleDays
           )
-        )}
+          .map((schedule) =>
+            editingScheduleId === schedule.id ||
+            (isCreatingNewSchedule && newScheduleId === schedule.id) ? (
+              <ScheduleItem
+                key={schedule.id}
+                schedule={schedule as ScheduleItemType}
+                botSettingsLoading={botSettingsLoading}
+                creatorId={creatorId}
+                onCancel={
+                  schedule.id === newScheduleId
+                    ? handleCancelCreate
+                    : handleCancelEdit
+                }
+              />
+            ) : (
+              <BotCardWrap key={schedule.id}>
+                <div className="flex items-center justify-between w-full">
+                  <p className="mulish--semibold text-lg">
+                    {schedule.scheduleName}
+                  </p>
+                  <div className="flex items-center space-x-2">
+                    <BasicButton
+                      width="w-fit hover:scale-90 duration-300 transition-all ease-in-out"
+                      fontType="mulish--semibold"
+                      textColor="text-brandBlue4x"
+                      fontSize="text-md"
+                      borderRadius="rounded-lg"
+                      padding="py-2 px-7"
+                      text="Edit"
+                      bgColor="bg-brandBlue4x/10"
+                      handleClick={() => handleEditClick(schedule.id ?? "")}
+                    />
+                  </div>
+                </div>
+              </BotCardWrap>
+            )
+          )}
       </div>
 
       <button

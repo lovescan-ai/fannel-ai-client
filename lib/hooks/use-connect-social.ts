@@ -4,7 +4,7 @@ import axios from "axios";
 import apiClient from "@/utils/axios";
 import { useMutation } from "@tanstack/react-query";
 import { disconnectInstagram } from "../supabase/action";
-
+import { useRouter } from "next/navigation";
 interface ConnectSocialResult {
   connectSocial: () => Promise<void>;
   authorizationUrl: string;
@@ -51,6 +51,7 @@ const useConnectSocial = (): ConnectSocialResult => {
 export default useConnectSocial;
 
 export const useDisconnectSocial = () => {
+  const router = useRouter();
   const { mutate: disconnectSocial, isPending } = useMutation({
     mutationFn: async ({ creatorId }: { creatorId: string }) => {
       toast.loading("Disconnecting account");
@@ -59,6 +60,7 @@ export const useDisconnectSocial = () => {
     },
     onSuccess: (data) => {
       toast.success("Account disconnected!");
+      router.push("/auth/connect-social");
     },
     onError: (data) => {
       toast.error("Unable to disconnect account");

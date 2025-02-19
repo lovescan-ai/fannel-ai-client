@@ -69,29 +69,25 @@ export const useGetAccessToken = (page?: "account") => {
           ]);
         }
 
+        // sleep for 10 seconds
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+
         // Read KV store but defer navigation
         const kv = await readPageTracker();
 
-        // Use setTimeout to ensure state updates complete before navigation
-        setTimeout(() => {
-          try {
-            if (kv.isDisconnected) {
-              router.push(kv.previousPage);
-              return; // Prevent multiple navigations
-            }
+        if (kv.isDisconnected && kv.previousPage) {
+          router.push(kv.previousPage);
+          return;
+        }
 
-            if (kv.nextPage && kv.nextPage.length > 0) {
-              router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
-            } else {
-              // Only close if we're in a popup context
-              if (window.opener) {
-                window.close();
-              }
-            }
-          } catch (navError) {
-            console.error("Navigation error:", navError);
+        if (kv.nextPage && kv.nextPage.length > 0) {
+          router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
+        } else {
+          // Only close if we're in a popup context
+          if (window.opener) {
+            window.close();
           }
-        }, 10000);
+        }
 
         toast.success("Instagram account connected successfully");
       } catch (err) {

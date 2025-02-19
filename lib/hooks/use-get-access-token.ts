@@ -69,15 +69,29 @@ export const useGetAccessToken = (page?: "account") => {
           ]);
         }
 
+        // Read KV store but defer navigation
         const kv = await readPageTracker();
-        if (kv.isDisconnected) {
-          router.push(kv.previousPage);
-        }
-        if (kv.nextPage && kv.nextPage.length > 0) {
-          router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
-        } else {
-          window.close();
-        }
+
+        // Use setTimeout to ensure state updates complete before navigation
+        setTimeout(() => {
+          try {
+            if (kv.isDisconnected) {
+              router.push(kv.previousPage);
+              return; // Prevent multiple navigations
+            }
+
+            if (kv.nextPage && kv.nextPage.length > 0) {
+              router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
+            } else {
+              // Only close if we're in a popup context
+              if (window.opener) {
+                window.close();
+              }
+            }
+          } catch (navError) {
+            console.error("Navigation error:", navError);
+          }
+        }, 100);
 
         toast.success("Instagram account connected successfully");
       } catch (err) {
@@ -92,7 +106,7 @@ export const useGetAccessToken = (page?: "account") => {
         toast.dismiss();
       }
     },
-    [mutate, router]
+    [mutate, updateUser, router]
   );
 
   return {

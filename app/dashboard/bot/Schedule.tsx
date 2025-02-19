@@ -10,6 +10,7 @@ import { ScheduleItem as ScheduleItemType } from "@prisma/client";
 import BasicButton from "@/components/elements/buttons/BasicButton";
 import MessageHeader from "./message-header";
 import ScheduleSkeleton from "./widgets/schedule-loading";
+import { toast } from "sonner";
 
 const Schedule = ({ creatorId }: { creatorId: string }) => {
   const { botSettingsLoading } = useGetBot(creatorId);
@@ -47,6 +48,17 @@ const Schedule = ({ creatorId }: { creatorId: string }) => {
 
   const handleAddSchedule = () => {
     setCreatingNewSchedule(true);
+    const isScheduleEmpty = schedules.filter(
+      (schedule) =>
+        !schedule.scheduleName &&
+        !schedule.scheduleStart &&
+        !schedule.scheduleEnd &&
+        !schedule.scheduleDays
+    );
+    if (isScheduleEmpty) {
+      toast.error("Please fill in all fields");
+      return;
+    }
     addSchedule();
   };
 
@@ -71,51 +83,43 @@ const Schedule = ({ creatorId }: { creatorId: string }) => {
           <MessageHeader type="schedule" />
         </div>
 
-        {schedules
-          .filter(
-            (schedule) =>
-              !schedule.scheduleName &&
-              !schedule.scheduleStart &&
-              !schedule.scheduleEnd &&
-              !schedule.scheduleDays
-          )
-          .map((schedule) =>
-            editingScheduleId === schedule.id ||
-            (isCreatingNewSchedule && newScheduleId === schedule.id) ? (
-              <ScheduleItem
-                key={schedule.id}
-                schedule={schedule as ScheduleItemType}
-                botSettingsLoading={botSettingsLoading}
-                creatorId={creatorId}
-                onCancel={
-                  schedule.id === newScheduleId
-                    ? handleCancelCreate
-                    : handleCancelEdit
-                }
-              />
-            ) : (
-              <BotCardWrap key={schedule.id}>
-                <div className="flex items-center justify-between w-full">
-                  <p className="mulish--semibold text-lg">
-                    {schedule.scheduleName}
-                  </p>
-                  <div className="flex items-center space-x-2">
-                    <BasicButton
-                      width="w-fit hover:scale-90 duration-300 transition-all ease-in-out"
-                      fontType="mulish--semibold"
-                      textColor="text-brandBlue4x"
-                      fontSize="text-md"
-                      borderRadius="rounded-lg"
-                      padding="py-2 px-7"
-                      text="Edit"
-                      bgColor="bg-brandBlue4x/10"
-                      handleClick={() => handleEditClick(schedule.id ?? "")}
-                    />
-                  </div>
+        {schedules.map((schedule) =>
+          editingScheduleId === schedule.id ||
+          (isCreatingNewSchedule && newScheduleId === schedule.id) ? (
+            <ScheduleItem
+              key={schedule.id}
+              schedule={schedule as ScheduleItemType}
+              botSettingsLoading={botSettingsLoading}
+              creatorId={creatorId}
+              onCancel={
+                schedule.id === newScheduleId
+                  ? handleCancelCreate
+                  : handleCancelEdit
+              }
+            />
+          ) : (
+            <BotCardWrap key={schedule.id}>
+              <div className="flex items-center justify-between w-full">
+                <p className="mulish--semibold text-lg">
+                  {schedule.scheduleName}
+                </p>
+                <div className="flex items-center space-x-2">
+                  <BasicButton
+                    width="w-fit hover:scale-90 duration-300 transition-all ease-in-out"
+                    fontType="mulish--semibold"
+                    textColor="text-brandBlue4x"
+                    fontSize="text-md"
+                    borderRadius="rounded-lg"
+                    padding="py-2 px-7"
+                    text="Edit"
+                    bgColor="bg-brandBlue4x/10"
+                    handleClick={() => handleEditClick(schedule.id ?? "")}
+                  />
                 </div>
-              </BotCardWrap>
-            )
-          )}
+              </div>
+            </BotCardWrap>
+          )
+        )}
       </div>
 
       <button

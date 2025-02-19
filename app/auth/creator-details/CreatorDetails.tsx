@@ -144,7 +144,7 @@ const CreatorDetails = () => {
           moreInputClasses=""
           required={true}
           padding="px-3 py-2"
-          className="!border-1 focus:!border-1 !border-brandGray11x focus:!border-black focus:!outline-none !bg-white"
+          className="!border-1 focus:!border-1 !border-brandGray11x focus:!border-black focus:!outline-none !bg-white !rounded-2xl"
         >
           <option value={""}>Gender</option>
           <option value={"Male"}>Male</option>

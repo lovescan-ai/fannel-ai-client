@@ -9,13 +9,12 @@ import FormSwitch2 from "@/components/elements/form/FormSwitch2";
 import TextareaAutosize from "react-textarea-autosize";
 import BasicButton from "@/components/elements/buttons/BasicButton";
 import SelectPicIcon from "@/components/ui/icons/select-pic";
-import CircularPreloader from "@/components/ui/preloader";
 import {
   useCreatorSettings,
   useUpdateCreatorSettings,
 } from "@/lib/hooks/use-creator-settings";
 import Skeleton from "@/components/ui/skeleton";
-import { Prisma } from "@prisma/client";
+
 import InstagramPreview from "./message-preview";
 import useCustomizationStore from "@/lib/hooks/useCustomizationStore";
 import MessageHeader from "./message-header";
@@ -293,7 +292,7 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
               type="file"
               ref={type === "cta" ? ctaFileInputRef : followUpFileInputRef}
               onChange={(e) => handleFileChange(e, type)}
-              accept="image/*"
+              accept="image/jpeg,image/png"
               style={{ display: "none" }}
             />
             {(type === "follow_up" || type === "cta") && (

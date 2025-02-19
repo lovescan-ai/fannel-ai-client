@@ -67,7 +67,7 @@ const FormInput: React.FC<FormInputProps> = ({
       {label && (
         <label
           htmlFor={id || "fullName"}
-          className={`${labelClassName} ${
+          className={`${labelClassName} text-black ${
             labelFont ? labelFont : "mulish--regular"
           } ${labelColor ? labelColor : ""}`}
         >

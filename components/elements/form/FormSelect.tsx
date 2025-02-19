@@ -57,7 +57,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
           htmlFor={id}
           className={`${labelFont ? labelFont : "mulish--regular"} ${
             labelColor ? labelColor : ""
-          } ${labelClassName}`}
+          } ${labelClassName} text-black`}
         >
           {label || "Name"}
         </label>

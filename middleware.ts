@@ -8,6 +8,17 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (request.nextUrl.pathname === "/dashboard") {
+    const response = NextResponse.next();
+
+    // Add cache control headers to prevent CSS caching issues
+    response.headers.set("Cache-Control", "no-store");
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
+
+    return response;
+  }
+
   const protectedRoutes = "dashboard";
 
   if (request.nextUrl.pathname.startsWith(`/${protectedRoutes}`) && !user) {

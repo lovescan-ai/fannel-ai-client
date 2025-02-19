@@ -100,7 +100,7 @@ const BotLayout = () => {
                 resetCustomizationSettings();
                 resetScheduleSettings();
               }}
-              className="appearance-none block w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue4x focus:border-brandBluering-brandBlue4x transition duration-150 ease-in-out"
+              className="appearance-none block w-full px-4 bg-white py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue4x focus:border-brandBluering-brandBlue4x transition duration-150 ease-in-out"
             >
               {creators && creators.length > 0 ? (
                 creators.map((creator) => (

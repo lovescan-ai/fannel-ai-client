@@ -5,6 +5,8 @@ import previewImg from "@/public/connect-socials-preview.svg";
 import { Metadata } from "next";
 import { getCurrentCreator } from "@/lib/supabase/action";
 import { redirect } from "next/navigation";
+import { readUserData } from "@/lib/supabase/readUser";
+import prisma from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "Connect Socials",
@@ -13,10 +15,24 @@ export const metadata: Metadata = {
 };
 
 const page = async () => {
-  const creator = await getCurrentCreator();
+  const {
+    data: { user },
+  } = await readUserData();
 
-  if (creator?.connectedInstagram && creator?.instagramAccessToken) {
-    return redirect("/");
+  if (!user) {
+    return redirect("/auth/signin");
+  }
+
+  const creator = await prisma.creator.findFirst({
+    where: {
+      userId: user.id,
+      connectedCreator: false,
+      connectedInstagram: false,
+    },
+  });
+
+  if (!creator) {
+    return redirect("/dashboard");
   }
 
   return (

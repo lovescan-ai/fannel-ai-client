@@ -13,6 +13,7 @@ import useBotGeneralSettingsStore from "@/lib/hooks/useGenerateBotSettings";
 import useBotCustomizationSettingsStore from "@/lib/hooks/useCustomizationStore";
 import useScheduleStore from "@/lib/hooks/useScheduleStore";
 const BotLayout = () => {
+  const [navigating, setNavigating] = useState(false);
   const resetGeneralSettings = useBotGeneralSettingsStore(
     (state) => state.resetSettings
   );
@@ -126,7 +127,10 @@ const BotLayout = () => {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  setNavigating(true);
+                  setActiveTab(tab.id);
+                }}
                 className={`${
                   activeTab === tab.id
                     ? "bg-brandBlue4x text-white"
@@ -155,6 +159,7 @@ const BotLayout = () => {
                     <tab.component
                       key={`${tab.id}-${selectedCreatorId}`}
                       creatorId={selectedCreatorId}
+                      navigating={navigating}
                     />
                   )
               )}

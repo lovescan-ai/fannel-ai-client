@@ -19,7 +19,13 @@ import InstagramPreview from "./message-preview";
 import useCustomizationStore from "@/lib/hooks/useCustomizationStore";
 import MessageHeader from "./message-header";
 
-const Customization = ({ creatorId }: { creatorId: string }) => {
+const Customization = ({
+  creatorId,
+  navigating,
+}: {
+  creatorId: string;
+  navigating: boolean;
+}) => {
   const [componentLoaded, setComponentLoaded] = useState(false);
   const { updateBot, updatingBot } = useUpdateBot();
   const { botSettings, botSettingsLoading } = useGetBot(creatorId);
@@ -465,14 +471,14 @@ const Customization = ({ creatorId }: { creatorId: string }) => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-5 bg-red-500 static z-10">
+    <div className="flex flex-col gap-5">
       {/* <CircularPreloader isLoading={updatingBot || isUpdatingSettings} /> */}
 
       {renderSection("greeting")}
       {renderSection("cta")}
       {renderSection("follow_up")}
 
-      {componentLoaded && (
+      {componentLoaded && !navigating && (
         <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300 -z-1">
           <InstagramPreview
             greetingMessage={settings.custom_greeting_msg}

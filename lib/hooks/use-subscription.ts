@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Subscription } from "@prisma/client";
+import { toast } from "sonner";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -35,6 +36,7 @@ export const useRealtimeSubscription = (userId?: string) => {
           }
         }
       } catch (error) {
+        toast.error(`Error fetching subscription: ${JSON.stringify(error)}`);
         console.error("Error fetching subscription:", error);
       } finally {
         setLoading(false);

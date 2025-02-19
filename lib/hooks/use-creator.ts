@@ -142,10 +142,6 @@ export const useViewCreators = () => {
 
 export const useUpdateCreator = () => {
   const { user } = useReadUser();
-  if (!user) {
-    toast.error("User not found");
-    throw new Error("User not found");
-  }
   const { subscription } = useRealtimeSubscription(user?.id);
 
   const { mutate, data, isPending, error } = useMutation({
@@ -157,6 +153,11 @@ export const useUpdateCreator = () => {
       data: Partial<Creator>;
     }) => {
       toast.loading("Updating creator");
+
+      if (!user) {
+        toast.error("User not found");
+        throw new Error("User not found");
+      }
 
       if (subscription) {
         await checkCredits(
@@ -170,8 +171,11 @@ export const useUpdateCreator = () => {
       return creator;
     },
 
-    onError() {
-      toast.error("Failed to update creator");
+    onError(error) {
+      // Add the error parameter here
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update creator"
+      );
     },
     onSettled() {
       toast.dismiss();
@@ -183,6 +187,7 @@ export const useUpdateCreator = () => {
     data,
     isPending,
     error,
+    user,
   };
 };
 

@@ -238,7 +238,7 @@ const General = ({ creatorId }: { creatorId: string }) => {
             type="number"
             min="1"
             max="50"
-            className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue4x"
+            className="w-20 px-3 py-2 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue4x"
             id="interactionSetting"
             name="interaction_setting"
             value={interaction_setting}

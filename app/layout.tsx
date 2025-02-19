@@ -4,6 +4,7 @@ import "./fonts.css";
 import "./mantineStyles.css";
 import { Metadata, Viewport } from "next";
 import { Suspense } from "react";
+import { useRouter } from "next/router";
 
 export const metadata: Metadata = {
   title: {
@@ -23,10 +24,14 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
+
   return (
     <>
       <Suspense>
-        <IndexLayout>{children}</IndexLayout>
+        <div key={router.asPath}>
+          <IndexLayout>{children}</IndexLayout>
+        </div>
       </Suspense>
     </>
   );

@@ -24,7 +24,7 @@
 html,
 body {
   color: #000;
-  background: white;
+  background: inherit;
 }
 
 .skeleton {

@@ -1,6 +1,6 @@
 import { Session, User } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { createSupabaseBrowserClient } from "../supabase/browser-client";
 
 const useReadUser = () => {
@@ -10,15 +10,14 @@ const useReadUser = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
 
-  const supabase = useMemo(() => createSupabaseBrowserClient(), []);
-
   useEffect(() => {
+    const supabase = createSupabaseBrowserClient();
+
     const fetchUserAndSession = async () => {
       try {
         setLoading(true);
         const { data } = await supabase.auth.getSession();
         setSession(data.session);
-        console.log("authenticating user data rn", data);
         setUser(data.session?.user ?? null);
       } catch (error) {
         setError(error as Error);
@@ -28,13 +27,31 @@ const useReadUser = () => {
     };
 
     fetchUserAndSession();
-  }, [supabase]);
+
+    // Set up authentication listener
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, newSession) => {
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const signOut = async () => {
-    setLoading(true);
-    await supabase.auth.signOut();
-    router.refresh();
-    setLoading(false);
+    try {
+      setLoading(true);
+      const supabase = createSupabaseBrowserClient();
+      await supabase.auth.signOut();
+      setLoading(false);
+      router.refresh();
+    } catch (error) {
+      setError(error as Error);
+      setLoading(false);
+    }
   };
 
   return { session, user, error, loading, signOut };

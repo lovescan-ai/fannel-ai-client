@@ -15,6 +15,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
   }
 
+  const path = request.nextUrl.pathname;
+
+  if (path === "/") {
+    console.log("redirecting to dashboard");
+    return NextResponse.redirect(new URL(`/dashboard`, request.url));
+  }
+
   const subscription = await supabase
     .from("subscriptions")
     .select("*")

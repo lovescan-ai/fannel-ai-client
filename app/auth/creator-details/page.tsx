@@ -19,7 +19,7 @@ const page = async () => {
 
   if (creator?.connectedCreator && creator?.connectedInstagram) {
     if (subscription?.status === "active") {
-      return redirect("/dashboard");
+      return redirect("/");
     } else {
       return redirect("/auth/pricing");
     }

@@ -67,19 +67,19 @@ export const useGetAccessToken = (page?: "account") => {
               onboardedDefaultCreator: true,
             }),
           ]);
-
-          // const kv = await readPageTracker();
-          // if (kv.isDisconnected) {
-          //   router.push(kv.previousPage);
-          // }
-          // if (kv.nextPage && kv.nextPage.length > 0) {
-          //   router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
-          // } else {
-          //   window.close();
-          // }
-
-          toast.success("Instagram account connected successfully");
         }
+
+        const kv = await readPageTracker();
+        if (kv.isDisconnected) {
+          router.push(kv.previousPage);
+        }
+        if (kv.nextPage && kv.nextPage.length > 0) {
+          router.push(`${kv.nextPage}?id=${encodeURIComponent(creatorId)}`);
+        } else {
+          window.close();
+        }
+
+        toast.success("Instagram account connected successfully");
       } catch (err) {
         setError(
           axios.isAxiosError(err)

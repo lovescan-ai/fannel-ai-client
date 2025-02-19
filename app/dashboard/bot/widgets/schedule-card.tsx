@@ -52,6 +52,15 @@ const ScheduleItem = React.memo(function ScheduleItem({
     if (schedule.id.startsWith("cm")) {
       saveUpdateSchedule(schedule, creatorId);
     } else {
+      if (
+        !schedule.scheduleName ||
+        !schedule.scheduleStart ||
+        !schedule.scheduleEnd ||
+        !schedule.scheduleDays
+      ) {
+        toast.error("Please fill in all fields");
+        return;
+      }
       saveSchedule(schedule, creatorId);
     }
   }, [schedule, creatorId, saveUpdateSchedule, saveSchedule]);

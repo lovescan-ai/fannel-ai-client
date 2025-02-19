@@ -58,7 +58,7 @@ const useScheduleStore = create<ScheduleStore>((set) => ({
           updatedAt: new Date(),
           timeZone: "UTC", // Initialize with default timezone
           botSettingsId: "",
-          isScheduleEnabled: false,
+          isScheduleEnabled: true,
         },
       ],
       newScheduleId: newId,
@@ -158,6 +158,7 @@ const useScheduleStore = create<ScheduleStore>((set) => ({
                 .endOf("day")
                 .toISOString(),
         scheduleDays: schedule.scheduleDays || [],
+        isScheduleEnabled: schedule.isScheduleEnabled || false,
         botSettingsId: schedule.botSettingsId || "",
         timeZone: schedule.timeZone || "UTC",
         creatorId: creatorId,

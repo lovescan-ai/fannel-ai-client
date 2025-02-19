@@ -7,7 +7,6 @@ import PerFeatureAnalytics from "./widgets/PerFeatureAnalytics";
 import SimpleStatCard from "./widgets/SimpleStatCard";
 import { useAnalytics } from "@/lib/hooks/use-analytics";
 import UserSubBarChart from "./widgets/UserSubBarChart";
-import { deletePageTracker, readPageTracker } from "@/lib/kv/actions";
 
 type TimeFilter = "today" | "lastWeek" | "lastMonth" | "lastYear";
 
@@ -29,17 +28,8 @@ const AnalyticsPage: React.FC = () => {
     refetchData,
   } = useAnalytics(creatorId, currentDuration);
 
-  const handleRefresh = async () => {
-    const kv = await readPageTracker();
-
-    if (kv.isDisconnected) {
-      await deletePageTracker();
-      window.location.reload();
-    }
-    refetchData();
-  };
   useEffect(() => {
-    handleRefresh();
+    refetchData();
   }, [currentDuration, refetchData]);
 
   const durations: { id: TimeFilter; name: string }[] = [

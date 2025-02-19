@@ -48,17 +48,7 @@ const Schedule = ({ creatorId }: { creatorId: string }) => {
 
   const handleAddSchedule = () => {
     setCreatingNewSchedule(true);
-    const isScheduleEmpty = schedules.filter(
-      (schedule) =>
-        !schedule.scheduleName &&
-        !schedule.scheduleStart &&
-        !schedule.scheduleEnd &&
-        !schedule.scheduleDays
-    );
-    if (isScheduleEmpty) {
-      toast.error("Please fill in all fields");
-      return;
-    }
+
     addSchedule();
   };
 

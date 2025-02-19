@@ -24,14 +24,10 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
-
   return (
     <>
       <Suspense>
-        <div key={router.asPath}>
-          <IndexLayout>{children}</IndexLayout>
-        </div>
+        <IndexLayout>{children}</IndexLayout>
       </Suspense>
     </>
   );

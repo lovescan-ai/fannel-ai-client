@@ -1,12 +1,1 @@
-import { getUserData } from "@/lib/supabase/action";
-import { redirect } from "next/navigation";
-
-export default async function Page() {
-  const result = await getUserData();
-
-  if ("redirect" in result) {
-    return redirect(result.redirect as string);
-  }
-
-  return redirect("/dashboard");
-}
+export default async function Page() {}

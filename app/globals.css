@@ -21,6 +21,11 @@
   /* border: 1px solid red; */
 }
 
+html,
+body {
+  color: #000;
+}
+
 .skeleton {
   overflow: hidden;
   position: relative;

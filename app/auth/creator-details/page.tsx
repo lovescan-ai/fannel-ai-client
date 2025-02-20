@@ -2,7 +2,7 @@
 
 import React, { Suspense } from "react";
 import AuthWrap from "../widgets/AuthWrap";
-import previewImg from "../../../public/creator-details-preview.png";
+import previewImg from "../../../public/creator-details-2.png";
 import CreatorDetails from "./CreatorDetails";
 import { Loader } from "lucide-react";
 import {

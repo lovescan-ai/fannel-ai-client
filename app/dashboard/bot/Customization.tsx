@@ -478,7 +478,7 @@ const Customization = ({
       {renderSection("cta")}
       {renderSection("follow_up")}
 
-      {componentLoaded && !navigating && (
+      {componentLoaded && (
         <div className="md:absolute md:block hidden md:right-4 max-w-lg w-full bg-white opacity-100 transition-all ease-in-out duration-300 -z-1">
           <InstagramPreview
             greetingMessage={settings.custom_greeting_msg}

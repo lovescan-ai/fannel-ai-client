@@ -6,15 +6,8 @@ import { useRealtimeSubscription } from "@/lib/hooks/use-subscription";
 import { usePathname, useRouter } from "next/navigation";
 import CircularPreloader from "./preloader";
 import { PricingCard, PricingToggle } from "./pricing-card";
-import { toast } from "sonner";
 type FrequencyOption = "monthly" | "annually";
 
-interface CreatorSettings {
-  subscribed: boolean;
-  credits: number;
-  priceId: string;
-  status: "success" | "failed";
-}
 interface Frequency {
   value: FrequencyOption;
   label: string;
@@ -26,9 +19,7 @@ const frequencies: Frequency[] = [
   { value: "annually", label: "Annually", discount: "Save up to 30%" },
 ];
 
-const PricingPlans: React.FC<{ creatorSettings: CreatorSettings }> = ({
-  creatorSettings,
-}) => {
+const PricingPlans: React.FC = () => {
   const [frequency, setFrequency] = useState<Frequency>(frequencies[1]);
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -101,12 +92,6 @@ const PricingPlans: React.FC<{ creatorSettings: CreatorSettings }> = ({
       setIsRedirecting(false);
     }
   }, [subscription, pathname, router]);
-
-  useEffect(() => {
-    if (creatorSettings.status === "failed") {
-      toast.error("Unable to process payment");
-    }
-  }, [creatorSettings]);
 
   return (
     <div className="w-full z-50 relative">

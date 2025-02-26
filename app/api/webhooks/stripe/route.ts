@@ -221,6 +221,12 @@ export async function POST(req: NextRequest) {
           console.log("✅ Subscription updated");
         } catch (error) {
           console.error("Error handling invoice.paid event:", error);
+          await saveCreatorInfoKv({
+            subscribed: false,
+            credits: 0,
+            priceId: "",
+            status: "failed",
+          });
         }
         break;
       }
@@ -229,6 +235,12 @@ export async function POST(req: NextRequest) {
     }
   } catch (e) {
     console.error("stripe error: ", e);
+    await saveCreatorInfoKv({
+      subscribed: false,
+      credits: 0,
+      priceId: "",
+      status: "failed",
+    });
   }
 
   return NextResponse.json({});

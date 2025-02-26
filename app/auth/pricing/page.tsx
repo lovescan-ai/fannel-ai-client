@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   const creatorSettings = await readCreatorInfoKv();
 
-  if (creatorSettings.subscribed) {
+  if (creatorSettings && creatorSettings.subscribed) {
     redirect("/");
   }
 

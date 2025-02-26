@@ -171,6 +171,25 @@ export async function POST(req: NextRequest) {
         const user = await getUserByEmail(customer.email as string);
         if (!user) break;
 
+        console.log(
+          `🟠 Proceeded with updating subscription for ${JSON.stringify(
+            user,
+            null,
+            2
+          )}`
+        );
+
+        console.log(
+          `🟠 Proceeded with updating subscription for ${JSON.stringify(
+            plan,
+            null,
+            2
+          )}
+          
+          Price ID: ${priceId}
+          `
+        );
+
         await updateUserSubscription(user?.id as string, {
           status: "active",
           priceId,

@@ -21,6 +21,13 @@ interface User {
   price: number;
 }
 
+interface CreatorSettings {
+  subscribed: boolean;
+  credits: number;
+  priceId: string;
+  status: "success" | "failed";
+}
+
 export async function pageTracker({
   creatorId,
   previousPage,
@@ -67,5 +74,21 @@ export async function readUserInfoKv() {
 
 export async function deleteUserInfoKv() {
   const res = await kvClient.del(`user-info`);
+  return res;
+}
+
+export async function saveCreatorInfoKv(settings: CreatorSettings) {
+  await deleteCreatorInfoKv();
+  const res = await kvClient.set(`creator-info`, settings);
+  return res as unknown as CreatorSettings;
+}
+
+export async function readCreatorInfoKv() {
+  const res = await kvClient.get(`creator-info`);
+  return res as unknown as CreatorSettings;
+}
+
+export async function deleteCreatorInfoKv() {
+  const res = await kvClient.del(`creator-info`);
   return res;
 }

@@ -1,3 +1,4 @@
+import { saveUserInfoKv } from "@/lib/kv/actions";
 import { createCheckout } from "@/lib/stripe";
 import { readUserData } from "@/lib/supabase/readUser";
 import { NextResponse, NextRequest } from "next/server";
@@ -27,7 +28,25 @@ export async function POST(req: NextRequest) {
     const {
       data: { user: userData },
     } = user;
-    const { priceId, mode, successUrl, cancelUrl, interval } = body;
+    const {
+      priceId,
+      mode,
+      successUrl,
+      cancelUrl,
+      interval,
+      tierType,
+      credits,
+      price,
+    } = body;
+
+    await saveUserInfoKv({
+      tierType,
+      credits,
+      price,
+      id: userData?.id?.toString() || "",
+      email: userData?.email || "",
+      name: userData?.user_metadata?.name || "",
+    });
 
     const stripeSessionURL = await createCheckout({
       priceId,

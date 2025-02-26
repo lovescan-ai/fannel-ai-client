@@ -64,6 +64,11 @@ const PricingPlans: React.FC = () => {
           mode: "subscription",
           interval,
           tierType: tier.id,
+          credits: tier.credits,
+          price:
+            selectedFrequency === "monthly"
+              ? tier.price.monthly
+              : tier.price.annually,
         }),
       });
 

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/middleware";
+import { readCreatorInfoKv, saveCreatorInfoKv } from "./lib/kv/actions";
 
 export async function middleware(request: NextRequest) {
   console.log("middleware running");
@@ -7,6 +8,16 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const creatorSettings = await readCreatorInfoKv();
+  if (!creatorSettings) {
+    await saveCreatorInfoKv({
+      subscribed: false,
+      credits: 0,
+      priceId: "",
+      status: "failed",
+    });
+  }
 
   const protectedRoutes = "dashboard";
 

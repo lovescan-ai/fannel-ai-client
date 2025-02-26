@@ -10,7 +10,7 @@ datasource db {
 model User {
   id                      String        @id @default(cuid())
   name                    String?
-  email                   String      @unique
+  email                   String        @unique
   passwordHash            String?
   profileImageUrl         String?       @db.VarChar(2083)
   gender                  Gender?
@@ -27,23 +27,28 @@ model User {
   @@index([email])
 }
 
-
-
 model Creator {
   id                       String            @id @default(cuid())
   userId                   String
-  name                     String?            @db.VarChar(150)
+  name                     String?           @db.VarChar(150)
   onlyFansUrl              String?           @db.VarChar(2083)
   gender                   Gender?
   dateCreated              DateTime          @default(now())
   instagramProfileImageUrl String?           @db.VarChar(2083)
   isActive                 Boolean           @default(false)
   messageLimit             Int?
+  
   instagramAccessToken     String?
   instagramRefreshToken    String?
   instagramUsername        String?
-  instagramProfileId       String?
   instagramAccountId       String?           @unique
+
+  facebookPSID             String?
+  facebookUsername         String?
+  facebookPageId           String?           @unique
+  facebookPageAccessToken  String?
+
+
   createdAt                DateTime          @default(now())
   updatedAt                DateTime          @updatedAt
   usedCredits              Int               @default(0)
@@ -60,7 +65,7 @@ model Creator {
   totalSessions            Int               @default(0)
   maxCredit                Int               @default(0)
   messages                 Message[]
-  
+
   @@index([userId])
   @@index([name])
 }
@@ -72,9 +77,9 @@ model CreatorLink {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   shortLink String
-  key String
-  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  
+  key       String
+  creator   Creator  @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
   @@index([creatorId])
 }
 
@@ -100,7 +105,6 @@ model FollowUpSettings {
   creator             Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 }
 
-
 model Message {
   id               String      @id @default(cuid())
   content          String
@@ -115,50 +119,50 @@ model Message {
   type             MessageType @default(TEXT)
   creatorId        String
   creator          Creator     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
   @@index([senderId])
   @@index([receiverId])
   @@index([timestamp])
 }
 
 model BotSettings {
-  id                      String        @id @default(cuid())
-  creatorId               String        @unique
-  isActive                Boolean       @default(false)
-  autoRespondTo           AutoRespondTo
-  messageDelay            Int           @default(0)
-  greetingMessageDelay    Int           @default(0)
-  followUpMessageDelay    Int           @default(0)
-  ctaMessageDelay         Int           @default(0)
-  isGreetingMessageActive Boolean       @default(false)
-  greetingMessage         String?
-  isFollowUpMessageActive Boolean       @default(false)
-  responseStyle           Decimal       @default(0.5)
-  timeZone                String        @default("UTC")
-  isScheduleEnabled       Boolean       @default(false)
-  createdAt               DateTime      @default(now())
-  updatedAt               DateTime      @updatedAt
-  scheduleName            String?
-  lastConversationFetchTime DateTime?  
-  interactionSetting      Int           @default(4)
-  creator       Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  scheduleItems ScheduleItem[]
+  id                        String         @id @default(cuid())
+  creatorId                 String         @unique
+  isActive                  Boolean        @default(false)
+  autoRespondTo             AutoRespondTo
+  messageDelay              Int            @default(0)
+  greetingMessageDelay      Int            @default(0)
+  followUpMessageDelay      Int            @default(0)
+  ctaMessageDelay           Int            @default(0)
+  isGreetingMessageActive   Boolean        @default(false)
+  greetingMessage           String?
+  isFollowUpMessageActive   Boolean        @default(false)
+  responseStyle             Decimal        @default(0.5)
+  timeZone                  String         @default("UTC")
+  isScheduleEnabled         Boolean        @default(false)
+  createdAt                 DateTime       @default(now())
+  updatedAt                 DateTime       @updatedAt
+  scheduleName              String?
+  lastConversationFetchTime DateTime?
+  interactionSetting        Int            @default(4)
+  creator                   Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  scheduleItems             ScheduleItem[]
 
   @@index([creatorId])
 }
 
-
 model ScheduleItem {
-  id          String   @id @default(cuid())
-  scheduleName String
-  scheduleStart DateTime?
-  scheduleEnd DateTime?
-  scheduleDays Int[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  timeZone String @default("UTC")
-  botSettings BotSettings @relation(fields: [botSettingsId], references: [id], onDelete: Cascade)
-  botSettingsId String
-  isScheduleEnabled Boolean @default(false)
+  id                String      @id @default(cuid())
+  scheduleName      String
+  scheduleStart     DateTime?
+  scheduleEnd       DateTime?
+  scheduleDays      Int[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  timeZone          String      @default("UTC")
+  botSettings       BotSettings @relation(fields: [botSettingsId], references: [id], onDelete: Cascade)
+  botSettingsId     String
+  isScheduleEnabled Boolean     @default(false)
 }
 
 model Subscription {
@@ -203,7 +207,6 @@ enum MessageType {
   FOLLOW_UP
   GREETING
 }
-
 
 model Client {
   id        String   @id @default(uuid())

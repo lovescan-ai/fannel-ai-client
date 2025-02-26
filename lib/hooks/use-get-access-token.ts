@@ -12,8 +12,13 @@ interface AccessTokenResponse {
   user_id: string;
   access_token: string;
   short_lived_token: string;
-  recipient_id: string;
-  username: string;
+  instagram_account_id: string;
+  instagram_username: string;
+  profile_picture_url: string;
+  instagram_profile_picture_url: string;
+  facebook_page_id: string;
+  facebook_access_token: string;
+  facebook_username: string;
 }
 
 interface GetAccessTokenParams {
@@ -41,7 +46,7 @@ export const useGetAccessToken = (page?: "account") => {
         toast.loading("Connecting instagram account...");
 
         const { data } = await apiClient.get<AccessTokenResponse>(
-          `/instagram/access-token`,
+          `/facebook/access-token`,
           {
             params: { code },
           }
@@ -56,7 +61,12 @@ export const useGetAccessToken = (page?: "account") => {
               data: {
                 instagramAccessToken:
                   data.access_token || data.short_lived_token,
-                instagramAccountId: data.user_id.toString(),
+                instagramAccountId: data.instagram_account_id,
+                instagramUsername: data.instagram_username,
+                instagramProfileImageUrl: data.profile_picture_url,
+                facebookPageId: data.facebook_page_id,
+                facebookPageAccessToken: data.facebook_access_token,
+                facebookUsername: data.facebook_username,
                 connectedInstagram: true,
                 connectedCreator: true,
                 isActive: true,

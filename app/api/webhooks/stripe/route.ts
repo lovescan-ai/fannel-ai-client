@@ -9,7 +9,7 @@ import {
   updateUserSubscription,
 } from "@/lib/supabase/action";
 import config from "@/config/global";
-import { readUserInfoKv } from "@/lib/kv/actions";
+import { readUserInfoKv, saveCreatorInfoKv } from "@/lib/kv/actions";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2023-08-16",
@@ -149,34 +149,79 @@ export async function POST(req: NextRequest) {
       }
 
       case "invoice.paid": {
-        console.log("🟠 Proceeded with updating subscription");
-        const stripeObject: Stripe.Invoice = event.data
-          .object as Stripe.Invoice;
-        const customerId = stripeObject.customer;
-        const customer = (await stripe.customers.retrieve(
-          customerId as string
-        )) as Stripe.Customer;
+        try {
+          console.log("🟠 Proceeded with updating subscription");
+          const stripeObject: Stripe.Invoice = event.data
+            .object as Stripe.Invoice;
+          const customerId = stripeObject.customer;
 
-        const subscriptionId = stripeObject.subscription;
+          if (!customerId) {
+            console.error("Missing customer ID in invoice.paid event");
+            break;
+          }
 
-        const subscription = await stripe.subscriptions.retrieve(
-          subscriptionId as string
-        );
-        const priceId = subscription.items.data[0].price.id;
-        const plan = config.stripe.plans.find(
-          (p) => p.priceId === priceId || p.anualPriceId === priceId
-        );
+          const customer = (await stripe.customers.retrieve(
+            customerId as string
+          )) as Stripe.Customer;
 
-        if (!plan) break;
-        const user = await getUserByEmail(customer.email as string);
-        if (!user) break;
+          if (!customer) {
+            console.error(`Customer not found or deleted: ${customerId}`);
+            break;
+          }
 
-        await updateUserSubscription(user?.id as string, {
-          status: "active",
-          priceId,
-          credits: plan?.credits,
-        });
-        console.log("✅ Subscription updated");
+          const subscriptionId = stripeObject.subscription;
+          if (!subscriptionId) {
+            console.error("Missing subscription ID in invoice.paid event");
+            break;
+          }
+
+          const subscription = await stripe.subscriptions.retrieve(
+            subscriptionId as string
+          );
+          const priceId = subscription.items.data[0].price.id;
+          const plan = config.stripe.plans.find(
+            (p) => p.priceId === priceId || p.anualPriceId === priceId
+          );
+
+          if (!plan) {
+            console.error(`No plan found for price ID: ${priceId}`);
+            break;
+          }
+
+          if (!customer.email) {
+            console.error(`Customer has no email: ${customerId}`);
+            break;
+          }
+
+          const user = await getUserByEmail(customer.email as string);
+          if (!user) {
+            console.error(`No user found for email: ${customer.email}`);
+            break;
+          }
+
+          console.log(
+            `🟠 Proceeded with updating subscription for user: ${user.id}`
+          );
+
+          console.log(`🟠 Found plan: ${plan.name}, credits: ${plan.credits}`);
+
+          await updateUserSubscription(user.id, {
+            status: "active",
+            priceId,
+            credits: plan.credits,
+          });
+
+          await saveCreatorInfoKv({
+            subscribed: true,
+            credits: plan.credits,
+            priceId,
+            status: "success",
+          });
+
+          console.log("✅ Subscription updated");
+        } catch (error) {
+          console.error("Error handling invoice.paid event:", error);
+        }
         break;
       }
 

@@ -5,6 +5,8 @@ import AuthWrap from "../widgets/AuthWrap";
 import { Loader } from "lucide-react";
 import previewImg from "../../../public/creator-details-preview.png";
 import CreatorPricingSlider from "@/components/ui/creator-pricing-slider";
+import { readCreatorInfoKv } from "@/lib/kv/actions";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -13,6 +15,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
+  const creatorSettings = await readCreatorInfoKv();
+
+  if (creatorSettings.subscribed) {
+    redirect("/");
+  }
+
   return (
     <AuthWrap
       previewImg={previewImg as any}
@@ -26,7 +34,7 @@ export default async function Page() {
           </div>
         }
       >
-        <PricingPlans />
+        <PricingPlans creatorSettings={creatorSettings} />
         <CreatorPricingSlider />
       </Suspense>
     </AuthWrap>

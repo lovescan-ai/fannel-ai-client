@@ -23,7 +23,7 @@ const useConnectSocial = (): ConnectSocialResult => {
     setAuthorizationUrl("");
 
     try {
-      const response = await apiClient.get(`/instagram/authorize`, {
+      const response = await apiClient.get(`/facebook/authorize`, {
         responseType: "text",
       });
 

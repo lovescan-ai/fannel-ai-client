@@ -775,9 +775,9 @@ export async function getUserData(): Promise<
       data: { user: authData },
     } = await readUserData();
 
-    if (!authData) {
-      console.log("No authenticated user found");
-      throw new Error("No authenticated user found");
+    if (!authData || !authData.id) {
+      console.log("No authenticated user found or user has no ID");
+      return { redirect: "/auth/signin" };
     }
 
     // Find or create user and creator

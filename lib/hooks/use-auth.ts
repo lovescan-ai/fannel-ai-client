@@ -2,7 +2,6 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthError, User } from "@supabase/supabase-js";
-import { useUser } from "./use-user";
 import {
   createUserWithEmail,
   forgotPassword,
@@ -35,8 +34,7 @@ const useAuth = (): UseAuthReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [activeMethod, setActiveMethod] = useState<AuthMethod>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const { data } = useUser();
+  const [user, _] = useState<User | null>(null);
   const router = useRouter();
 
   const handleError = useCallback(

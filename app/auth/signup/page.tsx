@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Effortlessly grow your traffic. Let AI bot handle all your Instagram DMs 24/7.",
 };
 
-const page = async () => {
+const Page = async () => {
   return (
     <AuthWrap previewImg="">
       <div>
@@ -19,4 +19,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Page;

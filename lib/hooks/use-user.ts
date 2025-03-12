@@ -7,12 +7,9 @@ import {
   UseQueryResult,
 } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useEffect } from "react";
 
-// Define keys for React Query
 const USER_QUERY_KEY = ["user"];
 
-// Type for updateUser function
 type UpdateUserData = Partial<User>;
 
 export const useUserUpdate = () => {
